@@ -8,29 +8,31 @@ class SwipeRow extends Component {
     this.state = {
       x: 0,
       y: 0,
+      swiping: false,
       move: 0
     }
   }
 
   handleTouchStart = cb => e => {
     this.setState({
-      x: e.targetTouches[0].clientX,
-      y: e.targetTouches[0].clientY
+      x: e.clientX || e.targetTouches[0].clientX,
+      y: e.clientY || e.targetTouches[0].clientY,
+      swiping: true
     }, () => cb && cb(this.props.rowId))
   }
 
   handleTouchEnd = cb => e => {
-    console.log(this.props);
     this.setState({
       x: 0,
       y: 0,
+      swiping: false,
       move: 0
     }, () => cb && cb(this.props.rowId))
   }
 
   handleTouchMove = cb => e => {
     this.setState({
-      move: e.targetTouches[0].clientX - this.state.x
+      move: (e.clientX || e.targetTouches[0].clientX) - this.state.x
     }, () => cb && cb(this.props.rowId))
   }
 
@@ -50,6 +52,9 @@ class SwipeRow extends Component {
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
+          onMouseDown={this.handleTouchStart(touchStartCallback)}
+          onMouseUp={this.handleTouchEnd(touchEndCallback)}
+          onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
           { children }
         </div>
