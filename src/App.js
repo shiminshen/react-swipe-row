@@ -4,6 +4,14 @@ import SwipeRow from './SwipeRow'
 import './App.css'
 
 class App extends Component {
+  constructor (props) {
+    super(props)
+
+    this.state = {
+      list: [4, 5, 6, 7, 8]
+    }
+  }
+
   render () {
     return (
       <div className='App'>
@@ -11,12 +19,19 @@ class App extends Component {
           <img src={logo} className='App-logo' alt='logo' />
           <h1 className='App-title'>Welcome to React</h1>
         </header>
-        <SwipeRow>
-          <span>example 1</span>
-        </SwipeRow>
-        <SwipeRow>
-          <span>example 2</span>
-        </SwipeRow>
+        {
+          this.state.list.map(rowId => (
+            <SwipeRow
+              key={rowId}
+              rowId={rowId}
+              touchEndCallback={() => this.setState({
+                list: this.state.list.filter(val => rowId !== val)
+              })}
+            >
+              <span>example {rowId.toString()}</span>
+            </SwipeRow>
+          ))
+        }
       </div>
     )
   }
