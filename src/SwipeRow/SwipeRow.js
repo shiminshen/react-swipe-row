@@ -10,14 +10,14 @@ class SwipeRow extends Component {
       y: 0,
       swiping: false,
       move: 0,
+      offset: 0,
       actionBoxWidth: 0
     }
   }
 
   handleTouchStart = cb => e => {
-    console.log(e.clientX || e.targetTouches[0].clientX)
     this.setState({
-      x: (e.clientX || e.targetTouches[0].clientX) - this.state.move,
+      x: (e.clientX || e.targetTouches[0].clientX),
       y: e.clientY || e.targetTouches[0].clientY,
       swiping: true
     }, () => cb && cb(this.props.rowId))
@@ -28,11 +28,13 @@ class SwipeRow extends Component {
       x: 0,
       y: 0,
       swiping: false,
-      move: -this.state.actionBoxWidth
+      offset: this.state.move > 0 ? 0 : -this.state.actionBoxWidth,
+      move: 0
     }, () => cb && cb(this.props.rowId))
   }
 
   handleTouchMove = cb => e => {
+    console.log(this.state);
     this.setState({
       move: (e.clientX || e.targetTouches[0].clientX) - this.state.x
     }, () => cb && cb(this.props.rowId))
@@ -49,20 +51,22 @@ class SwipeRow extends Component {
       touchStartCallback,
       touchEndCallback,
       touchMoveCallback,
+      transitionFunc = 'all .7s cubic-bezier(0, 0, 0, 1)',
       className,
       children
     } = this.props
 
     const swipeRowStyle = {
       position: 'relative',
-      left: this.state.move,
-      transition: this.state.swiping ? '' : 'all .7s cubic-bezier(0, 0, 0, 1)'
+      left: this.state.move + this.state.offset,
+      transition: this.state.swiping ? '' : transitionFunc
     }
 
     const actionBoxStyle = {
       position: 'absolute',
       top: 0,
-      right: 0
+      right: 0,
+      display: 'flex'
     }
 
     return (
@@ -77,10 +81,10 @@ class SwipeRow extends Component {
           onMouseUp={this.handleTouchEnd(touchEndCallback)}
           onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
-          { children.props.children[0] }
+          { children && children.props.children[0] }
         </div>
         <div ref={ el => this.actionBox = el } className='actionBox' style={actionBoxStyle}>
-          { children.props.children[1] }
+          { children && children.props.children.filter( (el, idx) => idx !== 0) }
         </div>
       </div>
     )
