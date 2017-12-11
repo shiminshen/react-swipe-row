@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
 import SwipeRow from './SwipeRow'
+import Action from './SwipeRow/Action.js'
 import './App.css'
 
 class App extends Component {
@@ -28,8 +29,8 @@ class App extends Component {
             >
               <div>
                 <div className='rowContent'>example {rowId.toString()}</div>
-                <div className='backAction' >Delete</div>
-                <div className='backAction' >Delete</div>
+                <Action leftbox className='backAction' >Delete</Action>
+                <Action leftbox className='backAction' >Delete</Action>
               </div>
             </SwipeRow>
           ))
