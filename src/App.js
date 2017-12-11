@@ -22,13 +22,15 @@ class App extends Component {
         {
           this.state.list.map(rowId => (
             <SwipeRow
+              className='swipeRow'
               key={rowId}
               rowId={rowId}
-              touchEndCallback={() => this.setState({
-                list: this.state.list.filter(val => rowId !== val)
-              })}
-            >
-              <span>example {rowId.toString()}</span>
+              touchEndCallback={() => console.log('')} >
+              <div>
+                <div className='rowContent'>example {rowId.toString()}</div>
+                <div className='backAction' >Delete</div>
+                <div className='backAction' >Delete</div>
+              </div>
             </SwipeRow>
           ))
         }
