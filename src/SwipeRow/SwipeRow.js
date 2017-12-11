@@ -9,7 +9,8 @@ class SwipeRow extends Component {
       x: 0,
       y: 0,
       swiping: false,
-      move: 0
+      move: 0,
+      actionBoxWidth: 0
     }
   }
 
@@ -24,9 +25,9 @@ class SwipeRow extends Component {
   handleTouchEnd = cb => e => {
     this.setState({
       x: 0,
-      y: 0,
+      y: this.state.actionBoxWidth,
       swiping: false,
-      move: 0
+      move: -this.state.actionBoxWidth
     }, () => cb && cb(this.props.rowId))
   }
 
@@ -36,19 +37,38 @@ class SwipeRow extends Component {
     }, () => cb && cb(this.props.rowId))
   }
 
+  componentDidMount() {
+    this.setState({
+      actionBoxWidth: this.actionBox.getBoundingClientRect().width
+    })
+  }
+
   render () {
     let {
       touchStartCallback,
       touchEndCallback,
       touchMoveCallback,
+      className,
       children
     } = this.props
 
+    const swipeRowStyle = {
+      position: 'relative',
+      left: this.state.move,
+      transition: this.state.swiping ? '' : 'all .7s cubic-bezier(0, 0, 0, 1)'
+    }
+
+    const actionBoxStyle = {
+      position: 'absolute',
+      top: 0,
+      right: 0
+    }
+
     return (
-      <div style={{ overflow: 'hidden' }}>
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className='p-3 bg-light'
-          style={{ position: 'relative', left: this.state.move }}
+          className={className}
+          style={swipeRowStyle}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
@@ -56,7 +76,10 @@ class SwipeRow extends Component {
           onMouseUp={this.handleTouchEnd(touchEndCallback)}
           onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
-          { children }
+          { children.props.children[0] }
+        </div>
+        <div ref={ el => this.actionBox = el } className='actionBox' style={actionBoxStyle}>
+          { children.props.children[1] }
         </div>
       </div>
     )
