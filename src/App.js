@@ -25,7 +25,7 @@ class App extends Component {
               className='swipeRow'
               key={rowId}
               rowId={rowId}
-              touchEndCallback={() => console.log('')} >
+            >
               <div>
                 <div className='rowContent'>example {rowId.toString()}</div>
                 <div className='backAction' >Delete</div>
