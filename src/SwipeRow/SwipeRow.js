@@ -15,8 +15,9 @@ class SwipeRow extends Component {
   }
 
   handleTouchStart = cb => e => {
+    console.log(e.clientX || e.targetTouches[0].clientX)
     this.setState({
-      x: e.clientX || e.targetTouches[0].clientX,
+      x: (e.clientX || e.targetTouches[0].clientX) - this.state.move,
       y: e.clientY || e.targetTouches[0].clientY,
       swiping: true
     }, () => cb && cb(this.props.rowId))
@@ -25,7 +26,7 @@ class SwipeRow extends Component {
   handleTouchEnd = cb => e => {
     this.setState({
       x: 0,
-      y: this.state.actionBoxWidth,
+      y: 0,
       swiping: false,
       move: -this.state.actionBoxWidth
     }, () => cb && cb(this.props.rowId))
