@@ -24,11 +24,23 @@ class SwipeRow extends Component {
   }
 
   handleTouchEnd = cb => e => {
+    const direction = this.state.move > 0 ? 1 : -1
+    const destPosition = this.state.move + this.state.offset
+    console.log(direction);
+    console.log(destPosition);
+    console.log(this.state);
+    let offset = 0
+    if (direction > 0) {
+      offset = -1 * destPosition > (this.state.actionBoxWidth / 2) ? -this.state.actionBoxWidth : 0
+    } else {
+      offset = direction * destPosition > (this.state.actionBoxWidth / 2) ? direction * this.state.actionBoxWidth : 0
+    }
+
     this.setState({
       x: 0,
       y: 0,
       swiping: false,
-      offset: this.state.move > 0 ? 0 : -this.state.actionBoxWidth,
+      offset: offset,
       move: 0
     }, () => cb && cb(this.props.rowId))
   }
@@ -83,8 +95,8 @@ class SwipeRow extends Component {
         >
           { children && children.props.children[0] }
         </div>
-        <div ref={ el => this.actionBox = el } className='actionBox' style={actionBoxStyle}>
-          { children && children.props.children.filter( (el, idx) => idx !== 0) }
+        <div ref={ el => this.actionBox = el } style={actionBoxStyle}>
+          { children && children.props.children.filter( el => el.type.name === 'Action') }
         </div>
       </div>
     )
