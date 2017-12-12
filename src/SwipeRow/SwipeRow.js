@@ -11,7 +11,8 @@ class SwipeRow extends Component {
       swiping: false,
       move: 0,
       offset: 0,
-      actionBoxWidth: 0
+      leftActionBoxWidth: 0,
+      rightActionBoxWidth: 0
     }
   }
 
@@ -24,16 +25,21 @@ class SwipeRow extends Component {
   }
 
   handleTouchEnd = cb => e => {
-    const direction = this.state.move > 0 ? 1 : -1
+    const direction = this.state.move > 0 ? 1 : 0
     const destPosition = this.state.move + this.state.offset
-    console.log(direction);
-    console.log(destPosition);
-    console.log(this.state);
+
+    // console.log(direction);
+    // console.log(Math.abs(destPosition));
+    // console.log(this.state.leftActionBoxWidth / 2);
+    // console.log((Math.abs(destPosition) > (this.state.leftActionBoxWidth / 2)));
+
+    const needShowRight = !direction && Math.abs(destPosition) > this.state.leftActionBoxWidth / 2 
+    const needShowLeft = direction && Math.abs(destPosition) > this.state.rightActionBoxWidth / 2 
     let offset = 0
-    if (direction > 0) {
-      offset = -1 * destPosition > (this.state.actionBoxWidth / 2) ? -this.state.actionBoxWidth : 0
+    if (direction) {
+      offset = needShowLeft ? this.state.rightActionBoxWidth : 0
     } else {
-      offset = direction * destPosition > (this.state.actionBoxWidth / 2) ? direction * this.state.actionBoxWidth : 0
+      offset = needShowRight ? -this.state.leftActionBoxWidth : 0
     }
 
     this.setState({
@@ -54,7 +60,8 @@ class SwipeRow extends Component {
 
   componentDidMount() {
     this.setState({
-      actionBoxWidth: this.actionBox.getBoundingClientRect().width
+      leftActionBoxWidth: this.leftActionBox.getBoundingClientRect().width,
+      rightActionBoxWidth: this.rightActionBox.getBoundingClientRect().width
     })
   }
 
@@ -81,6 +88,13 @@ class SwipeRow extends Component {
       display: 'flex'
     }
 
+    const rightActionBoxStyle = {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      display: 'flex'
+    }
+
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
@@ -95,8 +109,11 @@ class SwipeRow extends Component {
         >
           { children && children.props.children[0] }
         </div>
-        <div ref={ el => this.actionBox = el } style={actionBoxStyle}>
-          { children && children.props.children.filter( el => el.type.name === 'Action') }
+        <div ref={ el => this.leftActionBox = el } style={actionBoxStyle}>
+          { children && children.props.children.filter( el => el.type.name === 'Action' && el.props.left) }
+        </div>
+        <div ref={ el => this.rightActionBox = el } style={rightActionBoxStyle}>
+          { children && children.props.children.filter( el => el.type.name === 'Action' && el.props.right) }
         </div>
       </div>
     )

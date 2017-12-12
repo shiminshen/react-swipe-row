@@ -18,7 +18,7 @@ class App extends Component {
       <div className='App'>
         <header className='App-header'>
           <img src={logo} className='App-logo' alt='logo' />
-          <h1 className='App-title'>Welcome to React</h1>
+          <h1 className='App-title'>Swipe Row</h1>
         </header>
         {
           this.state.list.map(rowId => (
@@ -29,8 +29,9 @@ class App extends Component {
             >
               <div>
                 <div className='rowContent'>example {rowId.toString()}</div>
-                <Action leftbox className='backAction' >Delete</Action>
-                <Action leftbox className='backAction' >Delete</Action>
+                <Action left className='backAction' >Delete</Action>
+                <Action left className='backAction' >Delete</Action>
+                <Action right className='backAction' >Delete</Action>
               </div>
             </SwipeRow>
           ))
