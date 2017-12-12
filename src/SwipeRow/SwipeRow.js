@@ -94,7 +94,7 @@ class SwipeRow extends Component {
       left: 0,
       display: 'flex'
     }
-
+    console.log(children);
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
@@ -107,13 +107,13 @@ class SwipeRow extends Component {
           onMouseUp={this.handleTouchEnd(touchEndCallback)}
           onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
-          { children && children.props.children[0] }
+          { children && children[0] }
         </div>
         <div ref={ el => this.leftActionBox = el } style={actionBoxStyle}>
-          { children && children.props.children.filter( el => el.type.name === 'Action' && el.props.left) }
+          { children && children.filter( el => el.type.name === 'Action' && el.props.left) }
         </div>
         <div ref={ el => this.rightActionBox = el } style={rightActionBoxStyle}>
-          { children && children.props.children.filter( el => el.type.name === 'Action' && el.props.right) }
+          { children && children.filter( el => el.type.name === 'Action' && el.props.right) }
         </div>
       </div>
     )

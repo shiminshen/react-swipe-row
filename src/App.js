@@ -27,12 +27,10 @@ class App extends Component {
               key={rowId}
               rowId={rowId}
             >
-              <div>
-                <div className='rowContent'>example {rowId.toString()}</div>
-                <Action left className='backAction' >Delete</Action>
-                <Action left className='backAction' >Delete</Action>
-                <Action right className='backAction' >Delete</Action>
-              </div>
+              <div className='rowContent'>example {rowId.toString()}</div>
+              <Action left className='backAction' >Delete</Action>
+              <Action left className='backAction' >Delete</Action>
+              <Action right className='backAction' >Delete</Action>
             </SwipeRow>
           ))
         }
