@@ -57,8 +57,18 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
+      const { disableSwipeLeft = false, disableSwipeRight = false } = this.props
+      const destPosition = this.state.move + this.state.offset
+      let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
+
+      console.log(destPosition)
+      if (move > 0) {
+        move = disableSwipeRight && (destPosition >= 0) ? 0 : move
+      } else {
+        move = disableSwipeLeft && (destPosition <= 0) ? 0 : move
+      }
       this.setState({
-        move: (e.clientX || e.targetTouches[0].clientX) - this.state.x
+        move
       }, () => cb && cb(this.props.rowId))
     }
   }
@@ -96,12 +106,12 @@ class SwipeRow extends Component {
           onMouseUp={this.handleTouchEnd(touchEndCallback)}
           onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
-          { children && children[0] }
+          { children && children.filter(el => !el.props.left && !el.props.right) }
         </div>
-        <div ref={el => this.leftActionBox = el} style={{ position: 'absolute', top: 0, left: 0, display: 'flex' }}>
+        <div ref={el => { this.leftActionBox = el }} style={{ position: 'absolute', top: 0, left: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.left) }
         </div>
-        <div ref={el => this.rightActionBox = el} style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
+        <div ref={el => { this.rightActionBox = el }} style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.right) }
         </div>
       </div>

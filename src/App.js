@@ -25,6 +25,7 @@ class App extends Component {
               className='swipeRow'
               key={rowId}
               rowId={rowId}
+              disableSwipeRight
             >
               <div className='rowContent'>example {rowId.toString()}</div>
               <Action right className='backAction'>Delete</Action>
