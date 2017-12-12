@@ -58,17 +58,22 @@ class SwipeRow extends Component {
   handleTouchMove (cb) {
     return e => {
       const { disableSwipeLeft = false, disableSwipeRight = false } = this.props
-      const destPosition = this.state.move + this.state.offset
       let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
+      let offset = this.state.offset
+      const destPosition = move + offset
 
-      console.log(destPosition)
-      if (move > 0) {
-        move = disableSwipeRight && (destPosition >= 0) ? 0 : move
-      } else {
-        move = disableSwipeLeft && (destPosition <= 0) ? 0 : move
+      if (disableSwipeRight) {
+        move = (destPosition >= 0) ? 0 : move
+        offset = (destPosition >= 0) ? 0 : offset
       }
+      if (disableSwipeLeft) {
+        move = (destPosition <= 0) ? 0 : move
+        offset = (destPosition <= 0) ? 0 : offset
+      }
+
       this.setState({
-        move
+        move,
+        offset
       }, () => cb && cb(this.props.rowId))
     }
   }
