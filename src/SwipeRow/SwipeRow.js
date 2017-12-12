@@ -14,7 +14,9 @@ class SwipeRow extends Component {
       startTime: null,
       swiping: false,
       move: 0,
-      offset: 0
+      offset: 0,
+      disableSwipeLeft: props.disableSwipeLeft || false,
+      disableSwipeRight: props.disableSwipeRight || false
     }
     autobind(this)
   }
@@ -32,17 +34,26 @@ class SwipeRow extends Component {
 
   handleTouchEnd (cb) {
     return e => {
-      const direction = this.state.move > 0
-      const destPosition = this.state.move + this.state.offset
-      const duration = Date.now() - this.state.startTime
+      const { move, startTime, disableSwipeLeft, disableSwipeRight } = this.state
+      let { offset } = this.state
 
-      let offset = 0
+      const direction = move > 0
+      const destPosition = move + offset
+      const duration = Date.now() - startTime
+
+      if (!move) { return }
+
       if (direction) {
-        const needShowLeft = direction && ((destPosition > this.leftActionBoxWidth / 2) || (duration < 200 && this.state.offset === 0))
-        offset = needShowLeft ? this.leftActionBoxWidth : 0
-      } else {
-        const needShowRight = !direction && ((Math.abs(destPosition) > this.rightActionBoxWidth / 2) || (duration < 200 && this.state.offset === 0))
-        offset = needShowRight ? -this.rightActionBoxWidth : 0
+        // check whether the right action box needs to be closed
+        offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
+        // chekc whether the left action box need to be open
+        offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeLeft ? this.leftActionBoxWidth : offset
+      }
+      if (!direction) {
+        // check whether the left action box needs to be closed
+        offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
+        // chekc whether the right action box need to be open
+        offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeRight ? -this.rightActionBoxWidth : offset
       }
 
       this.setState({
@@ -57,16 +68,16 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const { disableSwipeLeft = false, disableSwipeRight = false } = this.props
-      let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
+      const { x, disableSwipeLeft, disableSwipeRight } = this.state
+      let move = (e.clientX || e.targetTouches[0].clientX) - x
       let offset = this.state.offset
       const destPosition = move + offset
 
-      if (disableSwipeRight) {
+      if (disableSwipeLeft) {
         move = (destPosition >= 0) ? 0 : move
         offset = (destPosition >= 0) ? 0 : offset
       }
-      if (disableSwipeLeft) {
+      if (disableSwipeRight) {
         move = (destPosition <= 0) ? 0 : move
         offset = (destPosition <= 0) ? 0 : offset
       }
@@ -107,9 +118,6 @@ class SwipeRow extends Component {
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
-          onMouseDown={this.handleTouchStart(touchStartCallback)}
-          onMouseUp={this.handleTouchEnd(touchEndCallback)}
-          onMouseMove={this.state.swiping ? this.handleTouchMove(touchMoveCallback) : () => {}}
         >
           { children && children.filter(el => !el.props.left && !el.props.right) }
         </div>
