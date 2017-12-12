@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import autobind from 'react-autobind'
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
+import './SwipeRow.css'
+
 class SwipeRow extends Component {
   constructor (props) {
     super(props)
@@ -113,7 +115,7 @@ class SwipeRow extends Component {
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className}
+          className={className || 'swipeRowContent'}
           style={swipeRowStyle}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
