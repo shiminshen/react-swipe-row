@@ -6,14 +6,14 @@ class SwipeRow extends Component {
   constructor (props) {
     super(props)
 
+    this.leftActionBoxWidth = 0
+    this.rightActionBoxWidth = 0
     this.state = {
       x: 0,
       y: 0,
       swiping: false,
       move: 0,
-      offset: 0,
-      leftActionBoxWidth: 0,
-      rightActionBoxWidth: 0
+      offset: 0
     }
     autobind(this)
   }
@@ -35,17 +35,18 @@ class SwipeRow extends Component {
 
       console.log(direction)
       console.log(Math.abs(destPosition))
-      console.log(this.state.rightActionBoxWidth / 2)
-      console.log((Math.abs(destPosition) > (this.state.rightActionBoxWidth / 2)))
+      console.log(this.rightActionBoxWidth / 2)
+      console.log((Math.abs(destPosition) > (this.rightActionBoxWidth / 2)))
 
-      const needShowRight = !direction && Math.abs(destPosition) > this.state.leftActionBoxWidth / 2
-      const needShowLeft = direction && destPosition > this.state.rightActionBoxWidth / 2
+      console.log(this.rightActionBoxWidth)
+      const needShowRight = !direction && Math.abs(destPosition) > this.rightActionBoxWidth / 2
+      const needShowLeft = direction && destPosition > this.leftActionBoxWidth / 2
       console.log(needShowLeft)
       let offset = 0
       if (direction) {
-        offset = needShowLeft ? this.state.rightActionBoxWidth : 0
+        offset = needShowLeft ? this.leftActionBoxWidth : 0
       } else {
-        offset = needShowRight ? -this.state.leftActionBoxWidth : 0
+        offset = needShowRight ? -this.rightActionBoxWidth : 0
       }
 
       this.setState({
@@ -68,10 +69,8 @@ class SwipeRow extends Component {
   }
 
   componentDidMount () {
-    this.setState({
-      leftActionBoxWidth: this.leftActionBox.getBoundingClientRect().width,
-      rightActionBoxWidth: this.rightActionBox.getBoundingClientRect().width
-    })
+    this.leftActionBoxWidth = this.leftActionBox.getBoundingClientRect().width
+    this.rightActionBoxWidth = this.rightActionBox.getBoundingClientRect().width
   }
 
   render () {
@@ -90,20 +89,6 @@ class SwipeRow extends Component {
       transition: this.state.swiping ? '' : transitionFunc
     }
 
-    const actionBoxStyle = {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      display: 'flex'
-    }
-
-    const rightActionBoxStyle = {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      display: 'flex'
-    }
-
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
@@ -118,10 +103,10 @@ class SwipeRow extends Component {
         >
           { children && children[0] }
         </div>
-        <div ref={el => this.leftActionBox = el} style={actionBoxStyle}>
+        <div ref={el => this.leftActionBox = el} style={{ position: 'absolute', top: 0, left: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.left) }
         </div>
-        <div ref={el => this.rightActionBox = el} style={rightActionBoxStyle}>
+        <div ref={el => this.rightActionBox = el} style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.right) }
         </div>
       </div>
