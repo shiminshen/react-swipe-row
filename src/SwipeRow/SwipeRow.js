@@ -119,10 +119,10 @@ class SwipeRow extends Component {
           { children && children[0] }
         </div>
         <div ref={el => this.leftActionBox = el} style={actionBoxStyle}>
-          { children && children.filter(el => el.type.name === 'Action' && el.props.left) }
+          { children && children.filter(el => el.props.left) }
         </div>
         <div ref={el => this.rightActionBox = el} style={rightActionBoxStyle}>
-          { children && children.filter(el => el.type.name === 'Action' && el.props.right) }
+          { children && children.filter(el => el.props.right) }
         </div>
       </div>
     )
