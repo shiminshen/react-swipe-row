@@ -11,6 +11,7 @@ class SwipeRow extends Component {
     this.state = {
       x: 0,
       y: 0,
+      startTime: null,
       swiping: false,
       move: 0,
       offset: 0
@@ -23,6 +24,7 @@ class SwipeRow extends Component {
       this.setState({
         x: (e.clientX || e.targetTouches[0].clientX),
         y: e.clientY || e.targetTouches[0].clientY,
+        startTime: Date.now(),
         swiping: true
       }, () => cb && cb(this.props.rowId))
     }
@@ -30,22 +32,16 @@ class SwipeRow extends Component {
 
   handleTouchEnd (cb) {
     return e => {
-      const direction = this.state.move > 0 ? 1 : 0
+      const direction = this.state.move > 0
       const destPosition = this.state.move + this.state.offset
+      const duration = Date.now() - this.state.startTime
 
-      console.log(direction)
-      console.log(Math.abs(destPosition))
-      console.log(this.rightActionBoxWidth / 2)
-      console.log((Math.abs(destPosition) > (this.rightActionBoxWidth / 2)))
-
-      console.log(this.rightActionBoxWidth)
-      const needShowRight = !direction && Math.abs(destPosition) > this.rightActionBoxWidth / 2
-      const needShowLeft = direction && destPosition > this.leftActionBoxWidth / 2
-      console.log(needShowLeft)
       let offset = 0
       if (direction) {
+        const needShowLeft = direction && ((destPosition > this.leftActionBoxWidth / 2) || (duration < 200 && this.state.offset === 0))
         offset = needShowLeft ? this.leftActionBoxWidth : 0
       } else {
+        const needShowRight = !direction && ((Math.abs(destPosition) > this.rightActionBoxWidth / 2) || (duration < 200 && this.state.offset === 0))
         offset = needShowRight ? -this.rightActionBoxWidth : 0
       }
 
@@ -53,7 +49,7 @@ class SwipeRow extends Component {
         x: 0,
         y: 0,
         swiping: false,
-        offset: offset,
+        offset,
         move: 0
       }, () => cb && cb(this.props.rowId))
     }
@@ -61,7 +57,6 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      console.log(this.state)
       this.setState({
         move: (e.clientX || e.targetTouches[0].clientX) - this.state.x
       }, () => cb && cb(this.props.rowId))
@@ -69,8 +64,8 @@ class SwipeRow extends Component {
   }
 
   componentDidMount () {
-    this.leftActionBoxWidth = this.leftActionBox.getBoundingClientRect().width
-    this.rightActionBoxWidth = this.rightActionBox.getBoundingClientRect().width
+    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
+    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
   }
 
   render () {
