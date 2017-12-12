@@ -1,0 +1,5 @@
+.swipeRowContent {
+  position: relative;
+  background: #fff;
+  z-index: 2;
+}
