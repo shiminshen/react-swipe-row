@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import autobind from 'react-autobind'
-import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 class SwipeRow extends Component {
   constructor (props) {
@@ -144,10 +143,10 @@ class SwipeRow extends Component {
           { children && children.filter(el => !el.props.left && !el.props.right) }
         </div>
         <div ref={el => { this.leftActionBox = el }} style={{ visibility: leftActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, left: 0, display: 'flex' }}>
-          { children && children.filter(el => el.props.left) }
+          { children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.left) }
         </div>
         <div ref={el => { this.rightActionBox = el }} style={{ visibility: rightActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, right: 0, display: 'flex' }}>
-          { children && children.filter(el => el.props.right) }
+          { children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.right) }
         </div>
       </div>
     )

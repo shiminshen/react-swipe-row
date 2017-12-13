@@ -1,9 +1,9 @@
 import SwipeRow from './SwipeRow.js'
-import Action from './Action.js'
+import SwipeAction from './SwipeAction.js'
 
 export {
   SwipeRow,
-  Action
+  SwipeAction
 }
 
 export default SwipeRow

@@ -5,26 +5,31 @@ import { action } from '@storybook/addon-actions'
 import { linkTo } from '@storybook/addon-links'
 
 import { Button, Welcome } from '@storybook/react/demo'
-import { SwipeRow, Action } from '../SwipeRow'
+import { SwipeRow, SwipeAction } from '../SwipeRow'
 
-import '../App.css'
-
-storiesOf('Welcome', module).add('to Storybook', () => <Welcome showApp={linkTo('Button')} />)
-
-storiesOf('Button', module)
-  .add('with text', () => <Button onClick={action('clicked')}>Hello Button</Button>)
-  .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>)
+// import '../App.css'
 
 storiesOf('SwipeRow', module)
-  .add('with text', () => [1, 2, 3, 4, 5].map(rowId => (
+  .add('Simple', () => [1, 2, 3, 4, 5].map(rowId => (
     <SwipeRow
       key={rowId}
       rowId={rowId}
     >
-      <div className='rowContent'>example {rowId.toString()}</div>
-      <Action right className='backAction'>Delete</Action>
-      <Action left className='backAction'>Delete</Action>
-      <Action right className='backAction'>Delete</Action>
+      <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
+      <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
     </SwipeRow>
   )))
-  .add('with some emoji', () => <Button onClick={action('clicked')}>😀 😎 👍 💯</Button>)
+  .add('Disable swipe right', () => [1, 2, 3, 4, 5].map(rowId => (
+    <SwipeRow
+      key={rowId}
+      rowId={rowId}
+      disableSwipeRight
+    >
+      <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
+      <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
+    </SwipeRow>
+  )))
