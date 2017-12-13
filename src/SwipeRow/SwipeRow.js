@@ -17,6 +17,8 @@ class SwipeRow extends Component {
       swiping: false,
       move: 0,
       offset: 0,
+      leftActionBoxVisibility: false,
+      rightActionBoxVisibility: false,
       disableSwipeLeft: props.disableSwipeLeft || false,
       disableSwipeRight: props.disableSwipeRight || false
     }
@@ -45,17 +47,28 @@ class SwipeRow extends Component {
 
       if (!move) { return }
 
-      if (direction) {
-        // check whether the right action box needs to be closed
-        offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
-        // chekc whether the left action box need to be open
-        offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeLeft ? this.leftActionBoxWidth : offset
-      }
-      if (!direction) {
-        // check whether the left action box needs to be closed
-        offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
-        // chekc whether the right action box need to be open
-        offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeRight ? -this.rightActionBoxWidth : offset
+      if (duration < 200) {
+        if (direction) {
+          // swipe right
+          offset = offset < 0 ? 0 : this.leftActionBoxWidth
+        } else {
+          // swipe left
+          offset = offset > 0 ? 0 : -this.rightActionBoxWidth
+        }
+      } else {
+        if (direction) {
+          // if swipe right
+          // check whether the right action box needs to be closed
+          offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
+          // chekc whether the left action box need to be open
+          offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeLeft ? this.leftActionBoxWidth : offset
+        } else {
+          // if swipe left
+          // check whether the left action box needs to be closed
+          offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
+          // chekc whether the right action box need to be open
+          offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeRight ? -this.rightActionBoxWidth : offset
+        }
       }
 
       this.setState({
@@ -86,7 +99,9 @@ class SwipeRow extends Component {
 
       this.setState({
         move,
-        offset
+        offset,
+        leftActionBoxVisibility: destPosition > 0,
+        rightActionBoxVisibility: destPosition < 0
       }, () => cb && cb(this.props.rowId))
     }
   }
@@ -97,7 +112,7 @@ class SwipeRow extends Component {
   }
 
   render () {
-    let {
+    const {
       touchStartCallback,
       touchEndCallback,
       touchMoveCallback,
@@ -105,6 +120,8 @@ class SwipeRow extends Component {
       className,
       children
     } = this.props
+
+    const { leftActionBoxVisibility, rightActionBoxVisibility } = this.state
 
     const swipeRowStyle = {
       position: 'relative',
@@ -123,10 +140,10 @@ class SwipeRow extends Component {
         >
           { children && children.filter(el => !el.props.left && !el.props.right) }
         </div>
-        <div ref={el => { this.leftActionBox = el }} style={{ position: 'absolute', top: 0, left: 0, display: 'flex' }}>
+        <div ref={el => { this.leftActionBox = el }} style={{ visibility: leftActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, left: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.left) }
         </div>
-        <div ref={el => { this.rightActionBox = el }} style={{ position: 'absolute', top: 0, right: 0, display: 'flex' }}>
+        <div ref={el => { this.rightActionBox = el }} style={{ visibility: rightActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, right: 0, display: 'flex' }}>
           { children && children.filter(el => el.props.right) }
         </div>
       </div>
