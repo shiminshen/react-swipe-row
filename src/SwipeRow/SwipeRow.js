@@ -13,6 +13,7 @@ class SwipeRow extends Component {
       y: 0,
       startTime: null,
       swiping: false,
+      transitoin: false,
       move: 0,
       offset: 0,
       leftActionBoxVisibility: false,
@@ -73,6 +74,7 @@ class SwipeRow extends Component {
         x: 0,
         y: 0,
         swiping: false,
+        transition: true,
         offset,
         move: 0
       }, () => cb && cb(this.props.rowId))
@@ -98,6 +100,7 @@ class SwipeRow extends Component {
       this.setState({
         move,
         offset,
+        transition: false,
         leftActionBoxVisibility: destPosition > 0,
         rightActionBoxVisibility: destPosition < 0
       }, () => cb && cb(this.props.rowId))
@@ -119,20 +122,21 @@ class SwipeRow extends Component {
       children
     } = this.props
 
-    const { leftActionBoxVisibility, rightActionBoxVisibility } = this.state
+    const { move, offset, transition, leftActionBoxVisibility, rightActionBoxVisibility } = this.state
 
     const swipeRowStyle = {
       position: 'relative',
-      left: this.state.move + this.state.offset,
+      left: move + offset,
       zIndex: 2,
-      transition: this.state.swiping ? '' : transitionFunc
+      transition: this.state.swiping && !transition ? '' : transitionFunc
     }
 
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className || 'swipeRowContent'}
+          className={className}
           style={swipeRowStyle}
+          onTransitionEnd={() => this.setState({ transition: false })}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
