@@ -2,8 +2,6 @@ import React, { Component } from 'react'
 import autobind from 'react-autobind'
 import '../../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
-import './SwipeRow.css'
-
 class SwipeRow extends Component {
   constructor (props) {
     super(props)
@@ -126,6 +124,7 @@ class SwipeRow extends Component {
     const swipeRowStyle = {
       position: 'relative',
       left: this.state.move + this.state.offset,
+      zIndex: 2,
       transition: this.state.swiping ? '' : transitionFunc
     }
 
