@@ -2,9 +2,7 @@ import React from 'react'
 
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
-import { linkTo } from '@storybook/addon-links'
 
-import { Button, Welcome } from '@storybook/react/demo'
 import { SwipeRow, SwipeAction } from '../SwipeRow'
 
 // import '../App.css'
@@ -16,9 +14,9 @@ storiesOf('SwipeRow', module)
       rowId={rowId}
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-      <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
+      <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Edit`)}>Edit</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
   .add('Disable swipe right', () => [1, 2, 3, 4, 5].map(rowId => (
@@ -28,8 +26,8 @@ storiesOf('SwipeRow', module)
       disableSwipeRight
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-      <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
+      <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Edit`)}>Edit</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
