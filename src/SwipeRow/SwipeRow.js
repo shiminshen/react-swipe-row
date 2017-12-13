@@ -59,13 +59,13 @@ class SwipeRow extends Component {
           // check whether the right action box needs to be closed
           offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
           // chekc whether the left action box need to be open
-          offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeLeft ? this.leftActionBoxWidth : offset
+          offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : offset
         } else {
           // if swipe left
           // check whether the left action box needs to be closed
           offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
           // chekc whether the right action box need to be open
-          offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeRight ? -this.rightActionBoxWidth : offset
+          offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : offset
         }
       }
 
@@ -86,11 +86,11 @@ class SwipeRow extends Component {
       let offset = this.state.offset
       const destPosition = move + offset
 
-      if (disableSwipeLeft) {
+      if (disableSwipeRight) {
         move = (destPosition >= 0) ? 0 : move
         offset = (destPosition >= 0) ? 0 : offset
       }
-      if (disableSwipeRight) {
+      if (disableSwipeLeft) {
         move = (destPosition <= 0) ? 0 : move
         offset = (destPosition <= 0) ? 0 : offset
       }
