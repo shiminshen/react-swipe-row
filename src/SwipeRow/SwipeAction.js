@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 
-class Action extends Component {
+class SwipeAction extends Component {
   render () {
     const { children, left, right, ...props } = this.props
     return (
@@ -11,4 +11,5 @@ class Action extends Component {
   }
 }
 
-export default Action
+SwipeAction.displayName = 'SwipeAction'
+export default SwipeAction

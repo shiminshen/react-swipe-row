@@ -1,7 +1,9 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
-import { SwipeRow, Action } from './SwipeRow'
+import { SwipeRow, SwipeAction } from './SwipeRow'
 import './App.css'
+
+import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
 
 class App extends Component {
   constructor (props) {
@@ -22,15 +24,14 @@ class App extends Component {
         {
           this.state.list.map(rowId => (
             <SwipeRow
-              className='swipeRow'
               key={rowId}
               rowId={rowId}
               disableSwipeRight
             >
-              <div className='rowContent'>example {rowId.toString()}</div>
-              <Action right className='backAction'>Delete</Action>
-              <Action left className='backAction'>Delete</Action>
-              <Action right className='backAction'>Delete</Action>
+              <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
+              <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
+              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
+              <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
             </SwipeRow>
           ))
         }
