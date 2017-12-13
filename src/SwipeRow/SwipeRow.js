@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import autobind from 'react-autobind'
 
 class SwipeRow extends Component {
@@ -16,9 +17,7 @@ class SwipeRow extends Component {
       move: 0,
       offset: 0,
       leftActionBoxVisibility: false,
-      rightActionBoxVisibility: false,
-      disableSwipeLeft: props.disableSwipeLeft || false,
-      disableSwipeRight: props.disableSwipeRight || false
+      rightActionBoxVisibility: false
     }
     autobind(this)
   }
@@ -36,8 +35,9 @@ class SwipeRow extends Component {
 
   handleTouchEnd (cb) {
     return e => {
-      const { move, startTime, disableSwipeLeft, disableSwipeRight } = this.state
+      const { move, startTime } = this.state
       let { offset } = this.state
+      const { disableSwipeLeft, disableSwipeRight } = this.props
 
       const direction = move > 0
       const destPosition = move + offset
@@ -82,8 +82,8 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const { x, disableSwipeLeft, disableSwipeRight } = this.state
-      let move = (e.clientX || e.targetTouches[0].clientX) - x
+      const { disableSwipeLeft, disableSwipeRight } = this.props
+      let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
       let offset = this.state.offset
       const destPosition = move + offset
 
@@ -116,7 +116,7 @@ class SwipeRow extends Component {
       touchStartCallback,
       touchEndCallback,
       touchMoveCallback,
-      transitionFunc = 'all .7s cubic-bezier(0, 0, 0, 1)',
+      transitionFunc,
       className,
       children
     } = this.props
@@ -151,6 +151,22 @@ class SwipeRow extends Component {
       </div>
     )
   }
+}
+
+SwipeRow.propTypes = {
+  touchStartCallback: PropTypes.func,
+  touchMoveCallback: PropTypes.func,
+  touchEndCallback: PropTypes.func,
+  className: PropTypes.string,
+  transitionFunc: PropTypes.string,
+  disableSwipeLeft: PropTypes.bool,
+  disableSwipeRight: PropTypes.bool
+}
+
+SwipeRow.defaultProps = {
+  transitionFunc: 'all .7s cubic-bezier(0, 0, 0, 1)',
+  disableSwipeLeft: false,
+  disableSwipeRight: false
 }
 
 export default SwipeRow
