@@ -123,18 +123,21 @@ class SwipeRow extends Component {
 
     const { move, offset, transition, leftActionBoxVisibility, rightActionBoxVisibility } = this.state
 
-    const swipeRowStyle = {
-      position: 'relative',
-      left: move + offset,
-      zIndex: 2,
-      transition: this.state.swiping && !transition ? '' : transitionFunc
-    }
+    const transitionStyle = this.state.swiping && !transition ? '' : transitionFunc
+    const leftActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.left)
+    const rightActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.right)
 
+    console.log(offset + move)
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
           className={className}
-          style={swipeRowStyle}
+          style={{
+            position: 'relative',
+            left: move + offset,
+            zIndex: 2,
+            transition: transitionStyle
+          }}
           onTransitionEnd={() => this.setState({ transition: false })}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
@@ -142,11 +145,31 @@ class SwipeRow extends Component {
         >
           { children && children.filter(el => !el.props.left && !el.props.right) }
         </div>
-        <div ref={el => { this.leftActionBox = el }} style={{ visibility: leftActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, left: 0, display: 'flex' }}>
-          { children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.left) }
+        <div
+          ref={el => { this.leftActionBox = el }}
+          style={{
+            visibility: leftActionBoxVisibility ? 'visible' : 'hidden',
+            position: 'absolute',
+            top: 0,
+            left: Math.min(0, -this.leftActionBoxWidth + (offset + move)),
+            display: 'flex',
+            transition: transitionStyle
+          }}
+        >
+          { leftActionBox }
         </div>
-        <div ref={el => { this.rightActionBox = el }} style={{ visibility: rightActionBoxVisibility ? 'visible' : 'hidden', position: 'absolute', top: 0, right: 0, display: 'flex' }}>
-          { children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.right) }
+        <div
+          ref={el => { this.rightActionBox = el }}
+          style={{
+            visibility: rightActionBoxVisibility ? 'visible' : 'hidden',
+            position: 'absolute',
+            top: 0,
+            right: Math.min(0, -this.rightActionBoxWidth - (offset + move)),
+            display: 'flex',
+            transition: transitionStyle
+          }}
+        >
+          { rightActionBox }
         </div>
       </div>
     )
