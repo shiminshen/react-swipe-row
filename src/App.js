@@ -26,12 +26,14 @@ class App extends Component {
             <SwipeRow
               key={rowId}
               rowId={rowId}
-              disableSwipeRight
             >
               <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
               <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
+              <SwipeAction left style={{padding: '12px', background: 'orange'}}>Mute</SwipeAction>
+              <SwipeAction left style={{padding: '12px', background: 'pink'}}>Mute</SwipeAction>
+              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Delete</SwipeAction>
               <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
+              <SwipeAction right style={{padding: '12px', background: 'yellow'}}>Delete</SwipeAction>
             </SwipeRow>
           ))
         }

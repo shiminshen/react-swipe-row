@@ -22,6 +22,11 @@ class SwipeRow extends Component {
     autobind(this)
   }
 
+  componentDidMount () {
+    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
+    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+  }
+
   handleTouchStart (cb) {
     return e => {
       this.setState({
@@ -106,9 +111,21 @@ class SwipeRow extends Component {
     }
   }
 
-  componentDidMount () {
-    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
-    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+  wrapParallaxActions (actionElements, align, destPosition, width, transition) {
+    return actionElements.map((el, idx) => (
+      <div
+        key={idx}
+        style={{
+          position: 'relative',
+          transition,
+          left: align === 'left'
+            ? Math.min(0, -(width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
+            : Math.max(0, (width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
+        }}
+      >
+        {el}
+      </div>
+    ))
   }
 
   render () {
@@ -124,10 +141,10 @@ class SwipeRow extends Component {
     const { move, offset, transition, leftActionBoxVisibility, rightActionBoxVisibility } = this.state
 
     const transitionStyle = this.state.swiping && !transition ? '' : transitionFunc
+
     const leftActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.left)
     const rightActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.right)
 
-    console.log(offset + move)
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
@@ -138,7 +155,7 @@ class SwipeRow extends Component {
             zIndex: 2,
             transition: transitionStyle
           }}
-          onTransitionEnd={() => this.setState({ transition: false })}
+          onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility: false, rightActionBoxVisibility: false })}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
@@ -153,10 +170,11 @@ class SwipeRow extends Component {
             top: 0,
             left: Math.min(0, -this.leftActionBoxWidth + (offset + move)),
             display: 'flex',
+            flexDirection: 'row-reverse',
             transition: transitionStyle
           }}
         >
-          { leftActionBox }
+          { this.wrapParallaxActions(leftActionBox, 'right', offset + move, this.leftActionBoxWidth, transitionStyle) }
         </div>
         <div
           ref={el => { this.rightActionBox = el }}
@@ -169,7 +187,7 @@ class SwipeRow extends Component {
             transition: transitionStyle
           }}
         >
-          { rightActionBox }
+          { this.wrapParallaxActions(rightActionBox, 'left', offset + move, this.rightActionBoxWidth, transitionStyle) }
         </div>
       </div>
     )

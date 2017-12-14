@@ -15,8 +15,11 @@ storiesOf('SwipeRow', module)
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
       <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Edit`)}>Delete</SwipeAction>
+      <SwipeAction left style={{padding: '12px', background: 'orange'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
+      <SwipeAction left style={{padding: '12px', background: 'pink'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
       <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
+      <SwipeAction right style={{padding: '12px', background: 'yellow'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
   .add('Disable swipe right', () => [1, 2, 3, 4, 5].map(rowId => (
