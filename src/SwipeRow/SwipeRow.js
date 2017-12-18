@@ -155,7 +155,7 @@ class SwipeRow extends Component {
             zIndex: 2,
             transition: transitionStyle
           }}
-          onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility: false, rightActionBoxVisibility: false })}
+          onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility, rightActionBoxVisibility })}
           onTouchStart={this.handleTouchStart(touchStartCallback)}
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
