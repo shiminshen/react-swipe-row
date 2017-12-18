@@ -134,6 +134,7 @@ class SwipeRow extends Component {
       touchEndCallback,
       touchMoveCallback,
       transitionFunc,
+      disableParallax,
       className,
       children
     } = this.props
@@ -174,7 +175,11 @@ class SwipeRow extends Component {
             transition: transitionStyle
           }}
         >
-          { this.wrapParallaxActions(leftActionBox, 'right', offset + move, this.leftActionBoxWidth, transitionStyle) }
+          {
+            disableParallax
+            ? leftActionBox
+            : this.wrapParallaxActions(leftActionBox, 'right', offset + move, this.leftActionBoxWidth, transitionStyle)
+          }
         </div>
         <div
           ref={el => { this.rightActionBox = el }}
@@ -187,7 +192,11 @@ class SwipeRow extends Component {
             transition: transitionStyle
           }}
         >
-          { this.wrapParallaxActions(rightActionBox, 'left', offset + move, this.rightActionBoxWidth, transitionStyle) }
+          {
+            disableParallax
+            ? rightActionBox
+            : this.wrapParallaxActions(rightActionBox, 'left', offset + move, this.rightActionBoxWidth, transitionStyle)
+          }
         </div>
       </div>
     )
@@ -201,13 +210,15 @@ SwipeRow.propTypes = {
   className: PropTypes.string,
   transitionFunc: PropTypes.string,
   disableSwipeLeft: PropTypes.bool,
-  disableSwipeRight: PropTypes.bool
+  disableSwipeRight: PropTypes.bool,
+  disableParallax: PropTypes.bool
 }
 
 SwipeRow.defaultProps = {
   transitionFunc: 'all .7s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
-  disableSwipeRight: false
+  disableSwipeRight: false,
+  disableParallax: false
 }
 
 export default SwipeRow
