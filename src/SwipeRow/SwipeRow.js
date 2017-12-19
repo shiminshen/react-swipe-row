@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import autobind from 'react-autobind'
 
+import Swipeable from 'react-swipeable'
+
 class SwipeRow extends Component {
   constructor (props) {
     super(props)
@@ -9,13 +11,10 @@ class SwipeRow extends Component {
     this.leftActionBoxWidth = 0
     this.rightActionBoxWidth = 0
     this.state = {
-      x: 0,
-      y: 0,
-      startTime: null,
-      swiping: false,
-      transitoin: false,
       move: 0,
       offset: 0,
+      swiping: false,
+      transitoin: false,
       leftActionBoxVisibility: false,
       rightActionBoxVisibility: false
     }
@@ -27,88 +26,80 @@ class SwipeRow extends Component {
     this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
   }
 
-  handleTouchStart (cb) {
-    return e => {
-      this.setState({
-        x: (e.clientX || e.targetTouches[0].clientX),
-        y: e.clientY || e.targetTouches[0].clientY,
-        startTime: Date.now(),
-        swiping: true
-      }, () => cb && cb(this.props.rowId))
-    }
-  }
+  swiped (e, deltaX, deltaY, isFlick, velocity) {
+    let offset = this.state.offset
+    const { disableSwipeLeft, disableSwipeRight } = this.props
+    const direction = deltaX < 0
+    const destPosition = -deltaX + offset
 
-  handleTouchEnd (cb) {
-    return e => {
-      const { move, startTime } = this.state
-      let { offset } = this.state
-      const { disableSwipeLeft, disableSwipeRight } = this.props
+    if (!deltaX) { return }
 
-      const direction = move > 0
-      const destPosition = move + offset
-      const duration = Date.now() - startTime
-
-      if (!move) { return }
-
-      if (duration < 200) {
-        if (direction) {
-          // swipe right
-          offset = offset < 0 ? 0 : this.leftActionBoxWidth
-        } else {
-          // swipe left
-          offset = offset > 0 ? 0 : -this.rightActionBoxWidth
-        }
+    if (isFlick) {
+      if (direction) {
+        // swipe right
+        offset = offset < 0 || disableSwipeRight ? 0 : this.leftActionBoxWidth
       } else {
-        if (direction) {
-          // if swipe right
-          // check whether the right action box needs to be closed
-          offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
-          // chekc whether the left action box need to be open
-          offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : offset
-        } else {
-          // if swipe left
-          // check whether the left action box needs to be closed
-          offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
-          // chekc whether the right action box need to be open
-          offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : offset
-        }
+        // swipe left
+        offset = offset > 0 || disableSwipeLeft ? 0 : -this.rightActionBoxWidth
       }
-
-      this.setState({
-        x: 0,
-        y: 0,
-        swiping: false,
-        transition: true,
-        offset,
-        move: 0
-      }, () => cb && cb(this.props.rowId))
+    } else {
+      if (direction) {
+        // if swipe right
+        // check whether the right action box needs to be closed
+        offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
+        // chekc whether the left action box need to be open
+        offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : offset
+      } else {
+        // if swipe left
+        // check whether the left action box needs to be closed
+        offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
+        // chekc whether the right action box need to be open
+        offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : offset
+      }
     }
+
+    this.setState({
+      move: 0,
+      offset,
+      swiping: false,
+      transition: true
+    })
   }
 
-  handleTouchMove (cb) {
-    return e => {
-      const { disableSwipeLeft, disableSwipeRight } = this.props
-      let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
-      let offset = this.state.offset
-      const destPosition = move + offset
-
-      if (disableSwipeRight) {
-        move = (destPosition >= 0) ? 0 : move
-        offset = (destPosition >= 0) ? 0 : offset
-      }
-      if (disableSwipeLeft) {
-        move = (destPosition <= 0) ? 0 : move
-        offset = (destPosition <= 0) ? 0 : offset
-      }
-
-      this.setState({
-        move,
-        offset,
-        transition: false,
-        leftActionBoxVisibility: destPosition > 0,
-        rightActionBoxVisibility: destPosition < 0
-      }, () => cb && cb(this.props.rowId))
+  swipingLeft (e, absX) {
+    e.preventDefault()
+    let move = -absX
+    let offset = this.state.offset
+    const destPosition = move + offset
+    if (this.props.disableSwipeLeft) {
+      move = (destPosition < 0) ? 0 : move
+      offset = (destPosition < 0) ? 0 : offset
     }
+    this.setState({
+      move,
+      offset,
+      transition: false,
+      leftActionBoxVisibility: destPosition > 0,
+      rightActionBoxVisibility: destPosition < 0
+    })
+  }
+
+  swipingRight (e, absX) {
+    e.preventDefault()
+    let move = absX
+    let offset = this.state.offset
+    const destPosition = move + offset
+    if (this.props.disableSwipeRight) {
+      move = (destPosition > 0) ? 0 : move
+      offset = (destPosition > 0) ? 0 : offset
+    }
+    this.setState({
+      move,
+      offset,
+      transition: false,
+      leftActionBoxVisibility: destPosition > 0,
+      rightActionBoxVisibility: destPosition < 0
+    })
   }
 
   wrapParallaxActions (actionElements, align, destPosition, width, transition) {
@@ -156,11 +147,14 @@ class SwipeRow extends Component {
             transition: transitionStyle
           }}
           onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility, rightActionBoxVisibility })}
-          onTouchStart={this.handleTouchStart(touchStartCallback)}
-          onTouchEnd={this.handleTouchEnd(touchEndCallback)}
-          onTouchMove={this.handleTouchMove(touchMoveCallback)}
         >
-          { children }
+          <Swipeable
+            onSwiped={this.swiped}
+            onSwipingLeft={this.swipingLeft}
+            onSwipingRight={this.swipingRight}
+          >
+            { children }
+          </Swipeable>
         </div>
         <div
           ref={el => { this.leftActionBox = el }}
