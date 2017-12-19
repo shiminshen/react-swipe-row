@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import logo from './logo.svg'
-import { SwipeRow, SwipeAction } from './SwipeRow'
+import SwipeRow from './SwipeRow'
 import './App.css'
 
 import '../node_modules/bootstrap/dist/css/bootstrap.min.css'
@@ -15,6 +15,16 @@ class App extends Component {
   }
 
   render () {
+    const rightButtons = [
+      <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
+      <div style={{padding: '12px', background: 'red'}}>Delete</div>,
+      <div style={{padding: '12px', background: 'yellow'}}>Delete</div>
+    ]
+    const leftButtons = [
+      <div style={{padding: '12px', background: 'gray'}}>Mute</div>,
+      <div style={{padding: '12px', background: 'orange'}}>Mute</div>,
+      <div style={{padding: '12px', background: 'pink'}}>Mute</div>
+    ]
     return (
       <div className='App'>
         <header className='App-header'>
@@ -27,14 +37,10 @@ class App extends Component {
             <SwipeRow
               key={rowId}
               rowId={rowId}
+              leftButtons={leftButtons}
+              rightButtons={rightButtons}
             >
               <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-              <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'orange'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'pink'}}>Mute</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'yellow'}}>Delete</SwipeAction>
             </SwipeRow>
           ))
         }
@@ -46,14 +52,10 @@ class App extends Component {
               key={rowId}
               rowId={rowId}
               disableParallax
+              leftButtons={leftButtons}
+              rightButtons={rightButtons}
             >
               <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-              <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'orange'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'pink'}}>Mute</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'yellow'}}>Delete</SwipeAction>
             </SwipeRow>
           ))
 
@@ -66,14 +68,10 @@ class App extends Component {
               key={rowId}
               rowId={rowId}
               disableSwipeRight
+              leftButtons={leftButtons}
+              rightButtons={rightButtons}
             >
               <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-              <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'orange'}}>Mute</SwipeAction>
-              <SwipeAction left style={{padding: '12px', background: 'pink'}}>Mute</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'blue'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
-              <SwipeAction right style={{padding: '12px', background: 'yellow'}}>Delete</SwipeAction>
             </SwipeRow>
           ))
         }

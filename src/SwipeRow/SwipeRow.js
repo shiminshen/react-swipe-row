@@ -112,7 +112,7 @@ class SwipeRow extends Component {
   }
 
   wrapParallaxActions (actionElements, align, destPosition, width, transition) {
-    return actionElements.map((el, idx) => (
+    return actionElements && actionElements.map((el, idx) => (
       <div
         key={idx}
         style={{
@@ -133,6 +133,8 @@ class SwipeRow extends Component {
       touchStartCallback,
       touchEndCallback,
       touchMoveCallback,
+      leftButtons,
+      rightButtons,
       transitionFunc,
       disableParallax,
       className,
@@ -142,9 +144,6 @@ class SwipeRow extends Component {
     const { move, offset, transition, leftActionBoxVisibility, rightActionBoxVisibility } = this.state
 
     const transitionStyle = this.state.swiping && !transition ? '' : transitionFunc
-
-    const leftActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.left)
-    const rightActionBox = children && children.filter(el => el.type.displayName === 'SwipeAction' && el.props.right)
 
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
@@ -161,7 +160,7 @@ class SwipeRow extends Component {
           onTouchEnd={this.handleTouchEnd(touchEndCallback)}
           onTouchMove={this.handleTouchMove(touchMoveCallback)}
         >
-          { children && children.filter(el => !el.props.left && !el.props.right) }
+          { children }
         </div>
         <div
           ref={el => { this.leftActionBox = el }}
@@ -177,8 +176,8 @@ class SwipeRow extends Component {
         >
           {
             disableParallax
-            ? leftActionBox
-            : this.wrapParallaxActions(leftActionBox, 'right', offset + move, this.leftActionBoxWidth, transitionStyle)
+            ? leftButtons
+            : this.wrapParallaxActions(leftButtons, 'right', offset + move, this.leftActionBoxWidth, transitionStyle)
           }
         </div>
         <div
@@ -194,8 +193,8 @@ class SwipeRow extends Component {
         >
           {
             disableParallax
-            ? rightActionBox
-            : this.wrapParallaxActions(rightActionBox, 'left', offset + move, this.rightActionBoxWidth, transitionStyle)
+            ? rightButtons
+            : this.wrapParallaxActions(rightButtons, 'left', offset + move, this.rightActionBoxWidth, transitionStyle)
           }
         </div>
       </div>
@@ -215,7 +214,7 @@ SwipeRow.propTypes = {
 }
 
 SwipeRow.defaultProps = {
-  transitionFunc: 'all .7s cubic-bezier(0, 0, 0, 1)',
+  transitionFunc: 'all .4s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
   disableParallax: false

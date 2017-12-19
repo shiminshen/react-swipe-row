@@ -3,23 +3,30 @@ import React from 'react'
 import { storiesOf } from '@storybook/react'
 import { action } from '@storybook/addon-actions'
 
-import { SwipeRow, SwipeAction } from '../SwipeRow'
+import SwipeRow from '../SwipeRow'
 
 // import '../App.css'
+
+const rightButtons = [
+  <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
+  <div style={{padding: '12px', background: 'red'}}>Delete</div>,
+  <div style={{padding: '12px', background: 'yellow'}}>Delete</div>
+]
+const leftButtons = [
+  <div style={{padding: '12px', background: 'gray'}}>Mute</div>,
+  <div style={{padding: '12px', background: 'orange'}}>Mute</div>,
+  <div style={{padding: '12px', background: 'pink'}}>Mute</div>
+]
 
 storiesOf('SwipeRow', module)
   .add('Simple', () => [1, 2, 3, 4, 5].map(rowId => (
     <SwipeRow
       key={rowId}
       rowId={rowId}
+      leftButtons={leftButtons}
+      rightButtons={rightButtons}
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-      <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction left style={{padding: '12px', background: 'orange'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction left style={{padding: '12px', background: 'pink'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'yellow'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
   .add('Disable swipe right', () => [1, 2, 3, 4, 5].map(rowId => (
@@ -27,11 +34,9 @@ storiesOf('SwipeRow', module)
       key={rowId}
       rowId={rowId}
       disableSwipeRight
+      rightButtons={rightButtons}
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-      <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Edit`)}>Edit</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
   .add('Disable swipe left', () => [1, 2, 3, 4, 5].map(rowId => (
@@ -39,10 +44,8 @@ storiesOf('SwipeRow', module)
       key={rowId}
       rowId={rowId}
       disableSwipeLeft
+      leftButtons={leftButtons}
     >
       <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-      <SwipeAction left style={{padding: '12px', background: 'gray'}} onClick={action(`Click Example ${rowId} Mute`)}>Mute</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'blue'}} onClick={action(`Click Example ${rowId} Edit`)}>Edit</SwipeAction>
-      <SwipeAction right style={{padding: '12px', background: 'red'}} onClick={action(`Click Example ${rowId} Delete`)}>Delete</SwipeAction>
     </SwipeRow>
   )))
