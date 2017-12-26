@@ -40,18 +40,10 @@ API
 #### SwipeRow
 | name                   | description            | type    | default |
 |------------------------|------------------------|--------- |---------|
-|  touchStartCallback    |                        | Function |         |
-|  touchMoveCallback     |                        | Function |         |
-|  touchEndCallback      |                        | Function |         |
+|  onTouchStart          |                        | Function |         |
+|  onTouchMove           |                        | Function |         |
+|  onTouchEnd            |                        | Function |         |
 |  className             | ClassName for wrapper div  | String   |''       |
 |  transitionFunc        | CSS transition to complete swipe | String | 'all 0.7s cubic-bezier(0, 0, 0, 1)' |
 |  disableSwipeLeft      | Disable swipe left     | Boolean  | false |
 |  disableSwipeRight     | Disable swipe right    | Boolean  | false |
-
-
-#### SwipeAction
-| name                   | description            | type    | default |
-|------------------------|------------------------|---------|---------|
-| left                   | Let action in left Box | Boolean | false   |
-| right                  | Let action in right Box| Boolean | false   |
-

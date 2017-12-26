@@ -130,9 +130,9 @@ class SwipeRow extends Component {
 
   render () {
     const {
-      touchStartCallback,
-      touchEndCallback,
-      touchMoveCallback,
+      onTouchStart,
+      onTouchEnd,
+      onTouchMove,
       leftButtons,
       rightButtons,
       transitionFunc,
@@ -156,9 +156,9 @@ class SwipeRow extends Component {
             transition: transitionStyle
           }}
           onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility, rightActionBoxVisibility })}
-          onTouchStart={this.handleTouchStart(touchStartCallback)}
-          onTouchEnd={this.handleTouchEnd(touchEndCallback)}
-          onTouchMove={this.handleTouchMove(touchMoveCallback)}
+          onTouchStart={this.handleTouchStart(onTouchStart)}
+          onTouchEnd={this.handleTouchEnd(onTouchEnd)}
+          onTouchMove={this.handleTouchMove(onTouchMove)}
         >
           { children }
         </div>
@@ -205,9 +205,9 @@ class SwipeRow extends Component {
 }
 
 SwipeRow.propTypes = {
-  touchStartCallback: PropTypes.func,
-  touchMoveCallback: PropTypes.func,
-  touchEndCallback: PropTypes.func,
+  onTouchStart: PropTypes.func,
+  onTouchMove: PropTypes.func,
+  onTouchEnd: PropTypes.func,
   className: PropTypes.string,
   transitionFunc: PropTypes.string,
   disableSwipeLeft: PropTypes.bool,
