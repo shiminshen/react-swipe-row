@@ -23,15 +23,6 @@ it('render children correctly', () => {
   expect(wrapper.contains(<div>contain</div>)).toEqual(true)
 })
 
-it('render children correctly', () => {
-  const wrapper = shallow((
-    <SwipeRow>
-      <div>contain</div>
-    </SwipeRow>
-  ))
-  expect(wrapper.contains(<div>contain</div>)).toEqual(true)
-})
-
 describe('touch event should update state', function () {
   const rightButtons = [
     <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
@@ -68,6 +59,7 @@ describe('touch event should update state', function () {
     expect(state).toHaveProperty('leftActionBoxVisibility', true)
     expect(state).toHaveProperty('rightActionBoxVisibility', false)
   })
+
   it('move right should update state', () => {
     wrapper.find('.sr-content').simulate('touchmove', { clientX: 50, clientY: 50 })
     const state = wrapper.state()
@@ -75,5 +67,43 @@ describe('touch event should update state', function () {
     expect(state).toHaveProperty('swiping', true)
     expect(state).toHaveProperty('leftActionBoxVisibility', false)
     expect(state).toHaveProperty('rightActionBoxVisibility', true)
+  })
+
+  it('move end should update state', () => {
+    wrapper.find('.sr-content').simulate('touchend', { clientX: 50, clientY: 50 })
+    const state = wrapper.state()
+    expect(state).toHaveProperty('move', 0)
+    expect(state).toHaveProperty('swiping', false)
+    expect(state).toHaveProperty('transition', true)
+  })
+
+  it('transitionend should update state', () => {
+    wrapper.find('.sr-content').simulate('transitionend')
+    const state = wrapper.state()
+    expect(state).toHaveProperty('transition', false)
+  })
+})
+
+describe('disable swipe should work', function () {
+  it('disable swipe left', function () {
+    const wrapper = mount((
+      <SwipeRow
+        disableSwipeRight
+      />
+    ))
+    wrapper.find('.sr-content').simulate('touchstart', { clientX: 100, clientY: 50 })
+    wrapper.find('.sr-content').simulate('touchmove', { clientX: 250, clientY: 50 })
+    expect(wrapper.state()).toHaveProperty('move', 0)
+  })
+
+  it('disable swipe right', function () {
+    const wrapper = mount((
+      <SwipeRow
+        disableSwipeLeft
+      />
+    ))
+    wrapper.find('.sr-content').simulate('touchstart', { clientX: 100, clientY: 50 })
+    wrapper.find('.sr-content').simulate('touchmove', { clientX: 10, clientY: 50 })
+    expect(wrapper.state()).toHaveProperty('move', 0)
   })
 })
