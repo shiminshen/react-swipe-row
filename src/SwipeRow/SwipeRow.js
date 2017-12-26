@@ -30,7 +30,7 @@ class SwipeRow extends Component {
   handleTouchStart (cb) {
     return e => {
       this.setState({
-        x: (e.clientX || e.targetTouches[0].clientX),
+        x: e.clientX || e.targetTouches[0].clientX,
         y: e.clientY || e.targetTouches[0].clientY,
         startTime: Date.now(),
         swiping: true
@@ -148,7 +148,7 @@ class SwipeRow extends Component {
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className}
+          className={className || 'sr-content'}
           style={{
             position: 'relative',
             left: move + offset,
@@ -163,6 +163,7 @@ class SwipeRow extends Component {
           { children }
         </div>
         <div
+          className='sr-left-buttons'
           ref={el => { this.leftActionBox = el }}
           style={{
             visibility: leftActionBoxVisibility ? 'visible' : 'hidden',
@@ -181,6 +182,7 @@ class SwipeRow extends Component {
           }
         </div>
         <div
+          className='sr-right-buttons'
           ref={el => { this.rightActionBox = el }}
           style={{
             visibility: rightActionBoxVisibility ? 'visible' : 'hidden',
