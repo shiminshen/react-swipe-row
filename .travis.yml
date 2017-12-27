@@ -7,17 +7,18 @@ cache:
 before_deploy:
   - npm run build
 deploy:
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    skip_cleanup: true
+    file:
+      - './src/SwipeRow/index.js'
+      - './src/SwipeRow/SwipeRow.js'
+      - './package.json'
+    on:
+      tags: true
   - provider: pages
     local_dir: './build'
     skip_cleanup: true
     github_token: $GITHUB_TOKEN
     on:
       branch: master
-  - provider: releases
-    api_key: $GITHUB_TOKEN
-    skip_cleanup: true
-    file:
-      - './src/SwipeRow/*'
-      - './package.json'
-    on:
-      tags: true
