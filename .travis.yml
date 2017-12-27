@@ -7,9 +7,16 @@ cache:
 before_deploy:
   - npm run build
 deploy:
-  provider: pages
-  local_dir: './build'
-  skip_cleanup: true
-  github_token: $GITHUB_TOKEN
-  on:
-    branch: master
+  - provider: pages
+    local_dir: './build'
+    skip_cleanup: true
+    github_token: $GITHUB_TOKEN
+    on:
+      branch: master
+  - provider: releases
+    api_key: $GITHUB_TOKEN
+    file:
+      - './src/SwipeRow/*'
+      - './package.json'
+    on:
+      tags: true
