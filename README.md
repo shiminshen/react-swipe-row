@@ -1,4 +1,4 @@
-Swipe Row
+Swipe Row [![Build Status](https://travis-ci.org/shiminshen/react-swipe-row.svg?branch=master)](https://travis-ci.org/shiminshen/react-swipe-row)
 ===
 
 A React component implement swipe to show actions.
