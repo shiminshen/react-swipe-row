@@ -4,9 +4,11 @@ node_js:
 cache:
   directories:
     - "node_modules"
+before_deploy:
+  - npm run build
 deploy:
   provider: pages
-  local_dir: 'build'
+  local_dir: './build'
   skip_cleanup: true
   github_token: $GITHUB_TOKEN
   on:
