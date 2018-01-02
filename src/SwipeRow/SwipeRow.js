@@ -12,10 +12,10 @@ class SwipeRow extends Component {
       x: 0,
       y: 0,
       startTime: null,
-      swiping: 0, // 0 means undefined swiping direction, 1 means horizental swipe and -1 means vertical swipe
-      transitoin: false,
+      swiping: 0, // 0 means undefined swiping direction, 1 means horizental swiping and -1 means vertical swiping
       move: 0,
       offset: 0,
+      transition: false,
       leftActionBoxVisibility: false,
       rightActionBoxVisibility: false
     }
@@ -52,8 +52,7 @@ class SwipeRow extends Component {
       this.setState({
         x,
         y,
-        startTime: Date.now(),
-        swiping: 0
+        startTime: Date.now()
       }, () => cb && cb(this.props.rowId))
     }
   }
@@ -95,12 +94,10 @@ class SwipeRow extends Component {
       }
 
       this.setState({
-        x: 0,
-        y: 0,
         swiping: 0,
-        transition: true,
+        move: 0,
         offset: newOffset,
-        move: 0
+        transition: true
       }, () => cb && cb(this.props.rowId))
     }
   }
