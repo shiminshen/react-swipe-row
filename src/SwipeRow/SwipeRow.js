@@ -12,7 +12,7 @@ class SwipeRow extends Component {
       x: 0,
       y: 0,
       startTime: null,
-      swiping: false,
+      swiping: 0, // 0 means undefined swiping direction, 1 means horizental swipe and -1 means vertical swipe
       transitoin: false,
       move: 0,
       offset: 0,
@@ -27,13 +27,33 @@ class SwipeRow extends Component {
     this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
   }
 
+  getPosition (e) {
+    return {
+      x: e.clientX || e.targetTouches[0].clientX,
+      y: e.clientY || e.targetTouches[0].clientY
+    }
+  }
+
+  calculateMovingDistance (e) {
+    const { x, y } = this.getPosition(e)
+    const deltaX = x - this.state.x
+    const deltaY = y - this.state.y
+    return {
+      deltaX,
+      deltaY,
+      absX: Math.abs(deltaX),
+      absY: Math.abs(deltaY)
+    }
+  }
+
   handleTouchStart (cb) {
     return e => {
+      const { x, y } = this.getPosition(e)
       this.setState({
-        x: e.clientX || e.targetTouches[0].clientX,
-        y: e.clientY || e.targetTouches[0].clientY,
+        x,
+        y,
         startTime: Date.now(),
-        swiping: true
+        swiping: 0
       }, () => cb && cb(this.props.rowId))
     }
   }
@@ -43,16 +63,15 @@ class SwipeRow extends Component {
       const { move, startTime, offset } = this.state
       const { disableSwipeLeft, disableSwipeRight } = this.props
 
-      const direction = move > 0
       const destPosition = move + offset
       const duration = Date.now() - startTime
 
-      let newOffset = offset;
+      let newOffset = offset
 
       if (!move) { return }
 
       if (duration < 200) {
-        if (direction) {
+        if (move > 0) {
           // swipe right
           newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
         } else {
@@ -60,7 +79,7 @@ class SwipeRow extends Component {
           newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
         }
       } else {
-        if (direction) {
+        if (move > 0) {
           // if swipe right
           // check whether the right action box needs to be closed
           newOffset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : newOffset
@@ -78,7 +97,7 @@ class SwipeRow extends Component {
       this.setState({
         x: 0,
         y: 0,
-        swiping: false,
+        swiping: 0,
         transition: true,
         offset: newOffset,
         move: 0
@@ -88,27 +107,53 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const { disableSwipeLeft, disableSwipeRight } = this.props
-      let move = (e.clientX || e.targetTouches[0].clientX) - this.state.x
-      let offset = this.state.offset
-      const destPosition = move + offset
+      const { delta, disableSwipeLeft, disableSwipeRight } = this.props
+      const { deltaX, absX, absY } = this.calculateMovingDistance(e)
 
-      if (disableSwipeRight) {
-        move = (destPosition >= 0) ? 0 : move
-        offset = (destPosition >= 0) ? 0 : offset
-      }
-      if (disableSwipeLeft) {
-        move = (destPosition <= 0) ? 0 : move
-        offset = (destPosition <= 0) ? 0 : offset
+      let swiping = this.state.swiping
+      if (absX < delta && absY < delta && !swiping) { return }
+
+      // defined swiping when first crossed delta threshold
+      if (!swiping) {
+        swiping = absX > absY ? 1 : -1
       }
 
-      this.setState({
-        move,
-        offset,
-        transition: false,
-        leftActionBoxVisibility: destPosition > 0,
-        rightActionBoxVisibility: destPosition < 0
-      }, () => cb && cb(this.props.rowId))
+      if (swiping > 0) {
+        // if this swiping is defined as a horzental swiping, update the state of SwipeRow
+
+        // prevent default behavior
+        if (e.cancelable) {
+          if (!e.defaultPrevented) {
+            e.preventDefault()
+          }
+        }
+
+        let move = deltaX
+        let offset = this.state.offset
+        const destPosition = move + offset
+        if (disableSwipeRight) {
+          move = (destPosition >= 0) ? 0 : move
+          offset = (destPosition >= 0) ? 0 : offset
+        }
+        if (disableSwipeLeft) {
+          move = (destPosition <= 0) ? 0 : move
+          offset = (destPosition <= 0) ? 0 : offset
+        }
+
+        this.setState({
+          swiping,
+          move,
+          offset,
+          transition: false,
+          leftActionBoxVisibility: destPosition > 0,
+          rightActionBoxVisibility: destPosition < 0
+        }, () => cb && cb(this.props.rowId))
+      } else {
+        // if this swiping is defined as a vertical swiping, ignore horizental swiping  change
+        this.setState({
+          swiping
+        })
+      }
     }
   }
 
@@ -210,6 +255,7 @@ SwipeRow.propTypes = {
   onTouchMove: PropTypes.func,
   onTouchEnd: PropTypes.func,
   className: PropTypes.string,
+  delta: PropTypes.number,
   transitionFunc: PropTypes.string,
   disableSwipeLeft: PropTypes.bool,
   disableSwipeRight: PropTypes.bool,
@@ -217,7 +263,8 @@ SwipeRow.propTypes = {
 }
 
 SwipeRow.defaultProps = {
-  transitionFunc: 'all .4s cubic-bezier(0, 0, 0, 1)',
+  delta: 10,
+  transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
   disableParallax: false
