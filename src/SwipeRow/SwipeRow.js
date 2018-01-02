@@ -69,27 +69,36 @@ class SwipeRow extends Component {
 
       if (!move) { return }
 
-      if (duration < 200) {
-        if (move > 0) {
-          // swipe right
+      if (move > 0) {
+        // if swipe right
+        if (duration < 200) {
+          // if it is a flick swipe
           newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
         } else {
-          // swipe left
-          newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
+          if ((destPosition > -this.rightActionBoxWidth / 2)) {
+            // check whether the right action box needs to be closed
+            newOffset = 0
+          }
+          if ((destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight) {
+            // check whether the left action box need to be open
+            newOffset = this.leftActionBoxWidth
+          }
         }
       } else {
-        if (move > 0) {
-          // if swipe right
-          // check whether the right action box needs to be closed
-          newOffset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : newOffset
-          // check whether the left action box need to be open
-          newOffset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : newOffset
+        // if swipe left
+
+        if (duration < 200) {
+          // if it is a flick swipe
+          newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
         } else {
-          // if swipe left
-          // check whether the left action box needs to be closed
-          newOffset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : newOffset
-          // check whether the right action box need to be open
-          newOffset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : newOffset
+          if (destPosition < this.leftActionBoxWidth / 2) {
+            // check whether the left action box needs to be closed
+            newOffset = 0
+          }
+          if ((destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft) {
+            // check whether the right action box need to be open
+            newOffset = -this.rightActionBoxWidth
+          }
         }
       }
 
@@ -129,12 +138,16 @@ class SwipeRow extends Component {
         let offset = this.state.offset
         const destPosition = move + offset
         if (disableSwipeRight) {
-          move = (destPosition >= 0) ? 0 : move
-          offset = (destPosition >= 0) ? 0 : offset
+          if (destPosition >= 0) {
+            move = 0
+            offset = 0
+          }
         }
         if (disableSwipeLeft) {
-          move = (destPosition <= 0) ? 0 : move
-          offset = (destPosition <= 0) ? 0 : offset
+          if (destPosition <= 0) {
+            move = 0
+            offset = 0
+          }
         }
 
         this.setState({
@@ -146,7 +159,7 @@ class SwipeRow extends Component {
           rightActionBoxVisibility: destPosition < 0
         }, () => cb && cb(this.props.rowId))
       } else {
-        // if this swiping is defined as a vertical swiping, ignore horizental swiping  change
+        // if this swiping is defined as a vertical swiping, ignore horizental swiping change
         this.setState({
           swiping
         })
