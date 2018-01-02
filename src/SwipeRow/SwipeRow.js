@@ -40,37 +40,38 @@ class SwipeRow extends Component {
 
   handleTouchEnd (cb) {
     return e => {
-      const { move, startTime } = this.state
-      let { offset } = this.state
+      const { move, startTime, offset } = this.state
       const { disableSwipeLeft, disableSwipeRight } = this.props
 
       const direction = move > 0
       const destPosition = move + offset
       const duration = Date.now() - startTime
 
+      let newOffset = offset;
+
       if (!move) { return }
 
       if (duration < 200) {
         if (direction) {
           // swipe right
-          offset = offset < 0 ? 0 : this.leftActionBoxWidth
+          newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
         } else {
           // swipe left
-          offset = offset > 0 ? 0 : -this.rightActionBoxWidth
+          newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
         }
       } else {
         if (direction) {
           // if swipe right
           // check whether the right action box needs to be closed
-          offset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : offset
-          // chekc whether the left action box need to be open
-          offset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : offset
+          newOffset = (destPosition > -this.rightActionBoxWidth / 2) ? 0 : newOffset
+          // check whether the left action box need to be open
+          newOffset = (destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight ? this.leftActionBoxWidth : newOffset
         } else {
           // if swipe left
           // check whether the left action box needs to be closed
-          offset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : offset
-          // chekc whether the right action box need to be open
-          offset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : offset
+          newOffset = (destPosition < this.leftActionBoxWidth / 2) ? 0 : newOffset
+          // check whether the right action box need to be open
+          newOffset = (destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft ? -this.rightActionBoxWidth : newOffset
         }
       }
 
@@ -79,7 +80,7 @@ class SwipeRow extends Component {
         y: 0,
         swiping: false,
         transition: true,
-        offset,
+        offset: newOffset,
         move: 0
       }, () => cb && cb(this.props.rowId))
     }
