@@ -44,6 +44,8 @@ API
 |  onTouchMove           |                        | Function |         |
 |  onTouchEnd            |                        | Function |         |
 |  className             | ClassName for wrapper div  | String   |''       |
-|  transitionFunc        | CSS transition to complete swipe | String | 'all 0.7s cubic-bezier(0, 0, 0, 1)' |
+|  deltaThreshold        | Threshold of swiping direction track | number | 10       |
+|  flickThreshold        | Threshold of flick swiping comfirmation | number | 200      |
+|  transitionFunc        | CSS transition to complete swipe | String | 'all 0.3s cubic-bezier(0, 0, 0, 1)' |
 |  disableSwipeLeft      | Disable swipe left     | Boolean  | false |
 |  disableSwipeRight     | Disable swipe right    | Boolean  | false |

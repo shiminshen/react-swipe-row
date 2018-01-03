@@ -60,7 +60,7 @@ class SwipeRow extends Component {
   handleTouchEnd (cb) {
     return e => {
       const { move, startTime, offset } = this.state
-      const { disableSwipeLeft, disableSwipeRight } = this.props
+      const { flickThreshold, disableSwipeLeft, disableSwipeRight } = this.props
 
       const destPosition = move + offset
       const duration = Date.now() - startTime
@@ -69,7 +69,7 @@ class SwipeRow extends Component {
 
       if (move > 0) {
         // if swipe right
-        if (duration < 200) {
+        if (duration < flickThreshold) {
           // if it is a flick swipe
           newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
         } else {
@@ -84,8 +84,7 @@ class SwipeRow extends Component {
         }
       } else if (move < 0) {
         // if swipe left
-
-        if (duration < 200) {
+        if (duration < flickThreshold) {
           // if it is a flick swipe
           newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
         } else {
@@ -111,11 +110,11 @@ class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const { delta, disableSwipeLeft, disableSwipeRight } = this.props
+      const { deltaThreshold, disableSwipeLeft, disableSwipeRight } = this.props
       const { deltaX, absX, absY } = this.calculateMovingDistance(e)
 
       let swiping = this.state.swiping
-      if (absX < delta && absY < delta && !swiping) { return }
+      if (absX < deltaThreshold && absY < deltaThreshold && !swiping) { return }
 
       // defined swiping when first crossed delta threshold
       if (!swiping) {
@@ -123,9 +122,8 @@ class SwipeRow extends Component {
       }
 
       if (swiping > 0) {
-        // if this swiping is defined as a horzental swiping, update the state of SwipeRow
-
-        // prevent default behavior
+        // if this swiping is defined as a horzental swiping, prevent default behavior
+        // and update the state of SwipeRow
         if (e.cancelable) {
           if (!e.defaultPrevented) {
             e.preventDefault()
@@ -263,7 +261,8 @@ SwipeRow.propTypes = {
   onTouchMove: PropTypes.func,
   onTouchEnd: PropTypes.func,
   className: PropTypes.string,
-  delta: PropTypes.number,
+  deltaThreshold: PropTypes.number,
+  flickThreshold: PropTypes.number,
   transitionFunc: PropTypes.string,
   disableSwipeLeft: PropTypes.bool,
   disableSwipeRight: PropTypes.bool,
@@ -271,7 +270,8 @@ SwipeRow.propTypes = {
 }
 
 SwipeRow.defaultProps = {
-  delta: 10,
+  deltaThreshold: 10,
+  flickThreshold: 200,
   transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
