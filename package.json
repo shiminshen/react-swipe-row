@@ -1,9 +1,6 @@
 {
   "name": "react-swipe-row",
   "jest": {
-    "env": [
-      "jest"
-    ],
     "collectCoverageFrom": [
       "src/SwipeRow/**/*"
     ]
