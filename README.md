@@ -23,7 +23,6 @@ import { SwipeRow, SwipeAction } from 'SwipeRow'
 const rowId = 1
 
 <SwipeRow
-  key={rowId}
   rowId={rowId}
   disableSwipeLeft
 >
