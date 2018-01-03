@@ -202,7 +202,7 @@ class SwipeRow extends Component {
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className}
+          className={className || 'sr-content'}
           style={{
             position: 'relative',
             left: move + offset,

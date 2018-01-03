@@ -9,7 +9,6 @@ it('render correctly', () => {
   const wrapper = shallow((
     <SwipeRow />
   ))
-  expect(wrapper.find('.sr-content').length).toEqual(1)
   expect(wrapper.find('.sr-left-buttons').length).toEqual(1)
   expect(wrapper.find('.sr-right-buttons').length).toEqual(1)
 })
@@ -17,10 +16,10 @@ it('render correctly', () => {
 it('render children correctly', () => {
   const wrapper = shallow((
     <SwipeRow>
-      <div>contain</div>
+      <div>content</div>
     </SwipeRow>
   ))
-  expect(wrapper.contains(<div>contain</div>)).toEqual(true)
+  expect(wrapper.contains(<div>content</div>)).toEqual(true)
 })
 
 describe('touch event should update state', function () {
