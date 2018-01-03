@@ -67,8 +67,6 @@ class SwipeRow extends Component {
 
       let newOffset = offset
 
-      if (!move) { return }
-
       if (move > 0) {
         // if swipe right
         if (duration < 200) {
@@ -84,7 +82,7 @@ class SwipeRow extends Component {
             newOffset = this.leftActionBoxWidth
           }
         }
-      } else {
+      } else if (move < 0) {
         // if swipe left
 
         if (duration < 200) {
