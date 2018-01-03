@@ -261,6 +261,8 @@ SwipeRow.propTypes = {
   onTouchMove: PropTypes.func,
   onTouchEnd: PropTypes.func,
   className: PropTypes.string,
+  leftButtons: PropTypes.array,
+  rightButtons: PropTypes.array,
   deltaThreshold: PropTypes.number,
   flickThreshold: PropTypes.number,
   transitionFunc: PropTypes.string,
@@ -270,6 +272,8 @@ SwipeRow.propTypes = {
 }
 
 SwipeRow.defaultProps = {
+  leftButtons: [],
+  rightButtons: [],
   deltaThreshold: 10,
   flickThreshold: 200,
   transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
