@@ -202,17 +202,17 @@ class SwipeRow extends Component {
     return (
       <div style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className || 'sr-content'}
+          className={className}
           style={{
             position: 'relative',
             left: move + offset,
             zIndex: 2,
             transition: transitionStyle
           }}
-          onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility, rightActionBoxVisibility })}
           onTouchStart={this.handleTouchStart(onTouchStart)}
           onTouchEnd={this.handleTouchEnd(onTouchEnd)}
           onTouchMove={this.handleTouchMove(onTouchMove)}
+          onTransitionEnd={() => this.setState({ transition: false, leftActionBoxVisibility, rightActionBoxVisibility })}
         >
           { children }
         </div>
@@ -223,7 +223,7 @@ class SwipeRow extends Component {
             visibility: leftActionBoxVisibility ? 'visible' : 'hidden',
             position: 'absolute',
             top: 0,
-            left: Math.min(0, -this.leftActionBoxWidth + (offset + move)),
+            left: disableParallax ? 0 : Math.min(0, -this.leftActionBoxWidth + (offset + move)),
             display: 'flex',
             flexDirection: 'row-reverse',
             transition: transitionStyle
@@ -242,7 +242,7 @@ class SwipeRow extends Component {
             visibility: rightActionBoxVisibility ? 'visible' : 'hidden',
             position: 'absolute',
             top: 0,
-            right: Math.min(0, -this.rightActionBoxWidth - (offset + move)),
+            right: disableParallax ? 0 : Math.min(0, -this.rightActionBoxWidth - (offset + move)),
             display: 'flex',
             transition: transitionStyle
           }}
