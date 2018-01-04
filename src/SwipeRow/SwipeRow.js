@@ -6,8 +6,6 @@ class SwipeRow extends Component {
   constructor (props) {
     super(props)
 
-    this.leftActionBoxWidth = 0
-    this.rightActionBoxWidth = 0
     this.state = {
       x: 0,
       y: 0,
@@ -15,21 +13,37 @@ class SwipeRow extends Component {
       swiping: 0, // 0 means undefined swiping direction, 1 means horizental swiping and -1 means vertical swiping
       move: 0,
       offset: 0,
+      actionTrigger: 0,
       transition: false,
+      contentBoxWidth: 0,
+      dynLeftActionBoxWidth: 0,
+      dynRightActionBoxWidth: 0,
+      leftActionBoxWidth: 0,
       leftActionBoxVisibility: false,
+      rightActionBoxWidth: 0,
       rightActionBoxVisibility: false
     }
     autobind(this)
   }
 
   componentDidMount () {
-    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
-    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+    this.setState({
+      contentBoxWidth: this.contentBox ? this.contentBox.getBoundingClientRect().width : 0,
+      leftActionBoxWidth: this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0,
+      rightActionBoxWidth: this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+    })
   }
 
-  componentDidUpdate () {
-    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
-    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+  componentDidUpdate (prevProps, prevState) {
+    let dynLeftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
+    let dynRightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+
+    if (dynLeftActionBoxWidth !== prevState.dynLeftActionBoxWidth || dynRightActionBoxWidth !== prevState.dynRightActionBoxWidth) {
+      this.setState({
+        dynLeftActionBoxWidth,
+        dynRightActionBoxWidth
+      })
+    }
   }
 
   getPosition (e) {
@@ -57,6 +71,7 @@ class SwipeRow extends Component {
       this.setState({
         x,
         y,
+        actionTrigger: 0,
         startTime: Date.now()
       }, () => cb && cb(this.props.rowId))
     }
@@ -64,7 +79,7 @@ class SwipeRow extends Component {
 
   handleTouchEnd (cb) {
     return e => {
-      const { move, startTime, offset } = this.state
+      const { move, startTime, offset, leftActionBoxWidth, rightActionBoxWidth } = this.state
       const { switchThreshold, flickThreshold, disableSwipeLeft, disableSwipeRight } = this.props
 
       const destPosition = move + offset
@@ -76,30 +91,30 @@ class SwipeRow extends Component {
         // if swipe right
         if (duration < flickThreshold) {
           // if it is a flick swipe
-          newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
+          newOffset = offset < 0 ? 0 : leftActionBoxWidth
         } else {
-          if ((destPosition > -this.rightActionBoxWidth * switchThreshold)) {
+          if ((destPosition > -rightActionBoxWidth * switchThreshold)) {
             // check whether the right action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition > this.leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
+          if ((destPosition > leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
             // check whether the left action box need to be open
-            newOffset = this.leftActionBoxWidth
+            newOffset = leftActionBoxWidth
           }
         }
       } else if (move < 0) {
         // if swipe left
         if (duration < flickThreshold) {
           // if it is a flick swipe
-          newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
+          newOffset = offset > 0 ? 0 : -rightActionBoxWidth
         } else {
-          if (destPosition < this.leftActionBoxWidth * switchThreshold) {
+          if (destPosition < leftActionBoxWidth * switchThreshold) {
             // check whether the left action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition < -this.rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
+          if ((destPosition < -rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
             // check whether the right action box need to be open
-            newOffset = -this.rightActionBoxWidth
+            newOffset = -rightActionBoxWidth
           }
         }
       }
@@ -138,6 +153,8 @@ class SwipeRow extends Component {
         let move = deltaX
         let offset = this.state.offset
         const destPosition = move + offset
+
+        // check disable direction
         if (disableSwipeRight) {
           if (destPosition >= 0) {
             move = 0
@@ -151,11 +168,20 @@ class SwipeRow extends Component {
           }
         }
 
+        let actionTrigger = 0
+        if (destPosition >= this.state.contentBoxWidth / 2) {
+          actionTrigger = 1
+        }
+        if (destPosition <= -this.state.contentBoxWidth / 2) {
+          actionTrigger = -1
+        }
+
         this.setState({
           swiping,
           move,
           offset,
-          transition: false,
+          transition: !!actionTrigger,
+          actionTrigger,
           leftActionBoxVisibility: destPosition > 0,
           rightActionBoxVisibility: destPosition < 0
         }, () => cb && cb(this.props.rowId))
@@ -168,13 +194,15 @@ class SwipeRow extends Component {
     }
   }
 
-  wrapParallaxActions (actionElements, align, destPosition, width, transition) {
-    return actionElements && actionElements.map((el, idx) => (
+  wrapParallaxActions (actionElements, align, destPosition, width, transition, actionTrigger) {
+    return actionElements && actionElements.map((el, idx, arr) => (
       <div
         key={idx}
         style={{
           position: 'relative',
           transition,
+          flexGrow: 1,
+          width: actionTrigger && idx === arr.length - 1 ? this.state.dynLeftActionBoxWidth : 'auto',
           left: align === 'left'
             ? Math.min(0, -(width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
             : Math.max(0, (width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
@@ -198,14 +226,24 @@ class SwipeRow extends Component {
       children
     } = this.props
 
-    const { move, offset, transition, leftActionBoxVisibility, rightActionBoxVisibility } = this.state
+    const {
+      move,
+      offset,
+      swiping,
+      transition,
+      actionTrigger,
+      leftActionBoxWidth,
+      leftActionBoxVisibility,
+      rightActionBoxWidth,
+      rightActionBoxVisibility
+    } = this.state
 
-    const transitionStyle = this.state.swiping && !transition ? '' : transitionFunc
-
+    const transitionStyle = swiping && !transition ? '' : transitionFunc
     return (
       <div className={className} style={{ position: 'relative', overflow: 'hidden' }}>
         <div
           className='sr-content'
+          ref={el => { this.contentBox = el }}
           style={{
             position: 'relative',
             left: move + offset,
@@ -226,7 +264,8 @@ class SwipeRow extends Component {
             visibility: leftActionBoxVisibility ? 'visible' : 'hidden',
             position: 'absolute',
             top: 0,
-            left: disableParallax ? 0 : Math.min(0, -this.leftActionBoxWidth + (offset + move)),
+            left: disableParallax ? 0 : Math.min(0, -leftActionBoxWidth + (offset + move)),
+            width: leftActionBoxWidth ? Math.max(leftActionBoxWidth, (offset + move)) : 'auto',
             display: 'flex',
             flexDirection: 'row-reverse',
             transition: transitionStyle
@@ -235,7 +274,7 @@ class SwipeRow extends Component {
           {
             disableParallax
             ? leftButtons
-            : this.wrapParallaxActions(leftButtons, 'right', offset + move, this.leftActionBoxWidth, transitionStyle)
+            : this.wrapParallaxActions(leftButtons, 'right', offset + move, leftActionBoxWidth, transitionStyle, actionTrigger)
           }
         </div>
         <div
@@ -245,7 +284,8 @@ class SwipeRow extends Component {
             visibility: rightActionBoxVisibility ? 'visible' : 'hidden',
             position: 'absolute',
             top: 0,
-            right: disableParallax ? 0 : Math.min(0, -this.rightActionBoxWidth - (offset + move)),
+            right: disableParallax ? 0 : Math.min(0, -rightActionBoxWidth - (offset + move)),
+            width: leftActionBoxWidth ? Math.max(rightActionBoxWidth, -(offset + move)) : 'auto',
             display: 'flex',
             transition: transitionStyle
           }}
@@ -253,7 +293,7 @@ class SwipeRow extends Component {
           {
             disableParallax
             ? rightButtons
-            : this.wrapParallaxActions(rightButtons, 'left', offset + move, this.rightActionBoxWidth, transitionStyle)
+            : this.wrapParallaxActions(rightButtons, 'left', offset + move, rightActionBoxWidth, transitionStyle, actionTrigger)
           }
         </div>
       </div>
@@ -283,7 +323,7 @@ SwipeRow.defaultProps = {
   switchThreshold: 0.5,
   deltaThreshold: 10,
   flickThreshold: 200,
-  transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
+  transitionFunc: 'all 2s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
   disableParallax: false
