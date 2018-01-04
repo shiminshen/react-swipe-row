@@ -10,21 +10,22 @@ class App extends Component {
     super(props)
 
     this.state = {
-      list: [1, 2, 3, 4, 5]
+      list: [1, 2, 3, 4, 5],
+      rightButtons: [
+        <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
+        <div style={{padding: '12px', background: 'red'}}>Delete</div>,
+        <div style={{padding: '12px', background: 'yellow'}}>Delete</div>
+      ],
+      leftButtons: [
+        <div style={{padding: '12px', background: 'gray'}}>Mute</div>,
+        <div style={{padding: '12px', background: 'orange'}}>Mute</div>,
+        <div style={{padding: '12px', background: 'pink'}}>Mute</div>
+      ]
     }
   }
 
   render () {
-    const rightButtons = [
-      <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
-      <div style={{padding: '12px', background: 'red'}}>Delete</div>,
-      <div style={{padding: '12px', background: 'yellow'}}>Delete</div>
-    ]
-    const leftButtons = [
-      <div style={{padding: '12px', background: 'gray'}}>Mute</div>,
-      <div style={{padding: '12px', background: 'orange'}}>Mute</div>,
-      <div style={{padding: '12px', background: 'pink'}}>Mute</div>
-    ]
+    const { leftButtons, rightButtons } = this.state
     return (
       <div className='App'>
         <header className='App-header'>

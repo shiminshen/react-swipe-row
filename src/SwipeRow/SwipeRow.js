@@ -27,6 +27,11 @@ class SwipeRow extends Component {
     this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
   }
 
+  componentDidUpdate () {
+    this.leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
+    this.rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
+  }
+
   getPosition (e) {
     return {
       x: e.clientX || e.targetTouches[0].clientX,
