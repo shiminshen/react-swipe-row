@@ -16,7 +16,7 @@
       "/test/**/*"
     ]
   },
-  "version": "0.0.3",
+  "version": "0.0.4",
   "private": true,
   "homepage": "https://shiminshen.github.io/react-swipe-row",
   "dependencies": {
