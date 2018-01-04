@@ -203,9 +203,9 @@ class SwipeRow extends Component {
     const transitionStyle = this.state.swiping && !transition ? '' : transitionFunc
 
     return (
-      <div style={{ position: 'relative', overflow: 'hidden' }}>
+      <div className={className} style={{ position: 'relative', overflow: 'hidden' }}>
         <div
-          className={className || 'sr-content'}
+          className='sr-content'
           style={{
             position: 'relative',
             left: move + offset,
