@@ -60,7 +60,7 @@ class SwipeRow extends Component {
   handleTouchEnd (cb) {
     return e => {
       const { move, startTime, offset } = this.state
-      const { flickThreshold, disableSwipeLeft, disableSwipeRight } = this.props
+      const { switchThreshold, flickThreshold, disableSwipeLeft, disableSwipeRight } = this.props
 
       const destPosition = move + offset
       const duration = Date.now() - startTime
@@ -73,11 +73,11 @@ class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset < 0 ? 0 : this.leftActionBoxWidth
         } else {
-          if ((destPosition > -this.rightActionBoxWidth / 2)) {
+          if ((destPosition > -this.rightActionBoxWidth * switchThreshold)) {
             // check whether the right action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition > this.leftActionBoxWidth / 2) && !disableSwipeRight) {
+          if ((destPosition > this.leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
             // check whether the left action box need to be open
             newOffset = this.leftActionBoxWidth
           }
@@ -88,11 +88,11 @@ class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset > 0 ? 0 : -this.rightActionBoxWidth
         } else {
-          if (destPosition < this.leftActionBoxWidth / 2) {
+          if (destPosition < this.leftActionBoxWidth * switchThreshold) {
             // check whether the left action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition < -this.rightActionBoxWidth / 2) && !disableSwipeLeft) {
+          if ((destPosition < -this.rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
             // check whether the right action box need to be open
             newOffset = -this.rightActionBoxWidth
           }
@@ -263,6 +263,7 @@ SwipeRow.propTypes = {
   className: PropTypes.string,
   leftButtons: PropTypes.array,
   rightButtons: PropTypes.array,
+  switchThreshold: PropTypes.number,
   deltaThreshold: PropTypes.number,
   flickThreshold: PropTypes.number,
   transitionFunc: PropTypes.string,
@@ -274,6 +275,7 @@ SwipeRow.propTypes = {
 SwipeRow.defaultProps = {
   leftButtons: [],
   rightButtons: [],
+  switchThreshold: 0.5,
   deltaThreshold: 10,
   flickThreshold: 200,
   transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
