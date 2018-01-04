@@ -24,12 +24,20 @@ const rowId = 1
 
 <SwipeRow
   rowId={rowId}
+  rightButtons={[
+    <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
+    <div style={{padding: '12px', background: 'red'}}>Delete</div>,
+    <div style={{padding: '12px', background: 'yellow'}}>Delete</div>
+  ]}
+  leftButtons={[
+    <div style={{padding: '12px', background: 'gray'}}>Mute</div>,
+    <div style={{padding: '12px', background: 'pink'}}>Mute</div>
+  ]}
   disableSwipeLeft
 >
-  <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
-  <SwipeAction left style={{padding: '12px', background: 'gray'}}>Mute</SwipeAction>
-  <SwipeAction right style={{padding: '12px', background: 'blue'}}>Edit</SwipeAction>
-  <SwipeAction right style={{padding: '12px', background: 'red'}}>Delete</SwipeAction>
+  <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>
+    example {rowId.toString()}
+  </div>
 </SwipeRow>
 
 ```
