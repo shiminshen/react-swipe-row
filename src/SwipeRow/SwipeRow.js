@@ -82,7 +82,7 @@ class SwipeRow extends Component {
       const { move, startTime, offset, leftActionBoxWidth, rightActionBoxWidth } = this.state
       const { switchThreshold, flickThreshold, disableSwipeLeft, disableSwipeRight } = this.props
 
-      const destPosition = move + offset
+      const contentPosition = move + offset
       const duration = Date.now() - startTime
 
       let newOffset = offset
@@ -93,11 +93,11 @@ class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset < 0 ? 0 : leftActionBoxWidth
         } else {
-          if ((destPosition > -rightActionBoxWidth * switchThreshold)) {
+          if ((contentPosition > -rightActionBoxWidth * switchThreshold)) {
             // check whether the right action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition > leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
+          if ((contentPosition > leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
             // check whether the left action box need to be open
             newOffset = leftActionBoxWidth
           }
@@ -108,11 +108,11 @@ class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset > 0 ? 0 : -rightActionBoxWidth
         } else {
-          if (destPosition < leftActionBoxWidth * switchThreshold) {
+          if (contentPosition < leftActionBoxWidth * switchThreshold) {
             // check whether the left action box needs to be closed
             newOffset = 0
           }
-          if ((destPosition < -rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
+          if ((contentPosition < -rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
             // check whether the right action box need to be open
             newOffset = -rightActionBoxWidth
           }
@@ -152,27 +152,27 @@ class SwipeRow extends Component {
 
         let move = deltaX
         let offset = this.state.offset
-        const destPosition = move + offset
+        const contentPosition = move + offset
 
         // check disable direction
         if (disableSwipeRight) {
-          if (destPosition >= 0) {
+          if (contentPosition >= 0) {
             move = 0
             offset = 0
           }
         }
         if (disableSwipeLeft) {
-          if (destPosition <= 0) {
+          if (contentPosition <= 0) {
             move = 0
             offset = 0
           }
         }
 
         let actionTrigger = 0
-        if (destPosition >= this.state.contentBoxWidth / 2) {
+        if (contentPosition >= this.state.contentBoxWidth / 2) {
           actionTrigger = 1
         }
-        if (destPosition <= -this.state.contentBoxWidth / 2) {
+        if (contentPosition <= -this.state.contentBoxWidth / 2) {
           actionTrigger = -1
         }
 
@@ -182,8 +182,8 @@ class SwipeRow extends Component {
           offset,
           transition: !!actionTrigger,
           actionTrigger,
-          leftActionBoxVisibility: destPosition > 0,
-          rightActionBoxVisibility: destPosition < 0
+          leftActionBoxVisibility: contentPosition > 0,
+          rightActionBoxVisibility: contentPosition < 0
         }, () => cb && cb(this.props.rowId))
       } else {
         // if this swiping is defined as a vertical swiping, ignore horizental swiping change
