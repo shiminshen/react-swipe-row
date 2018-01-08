@@ -194,7 +194,7 @@ class SwipeRow extends Component {
     }
   }
 
-  wrapParallaxActions (actionElements, align, destPosition, width, transition, actionTrigger) {
+  wrapParallaxActions (actionElements, align, contentPosition, originWidth, dynWidth, transition, actionTrigger) {
     return actionElements && actionElements.map((el, idx, arr) => (
       <div
         key={idx}
@@ -202,10 +202,10 @@ class SwipeRow extends Component {
           position: 'relative',
           transition,
           flexGrow: 1,
-          width: actionTrigger && idx === arr.length - 1 ? this.state.dynLeftActionBoxWidth : 'auto',
+          // transform: `scale(${actionTrigger && idx === arr.length - 1 ? arr.length : 1}, 1)`,
           left: align === 'left'
-            ? Math.min(0, -(width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
-            : Math.max(0, (width / actionElements.length) * idx - destPosition * (1 / actionElements.length * idx))
+            ? Math.min(0, -(originWidth / arr.length) * idx - contentPosition * (1 / arr.length * idx))
+            : Math.max(0, (originWidth / arr.length) * idx - contentPosition * (1 / arr.length * idx))
         }}
       >
         {el}
@@ -215,28 +215,31 @@ class SwipeRow extends Component {
 
   render () {
     const {
-      onTouchStart,
-      onTouchEnd,
-      onTouchMove,
-      leftButtons,
-      rightButtons,
-      transitionFunc,
-      disableParallax,
-      className,
-      children
-    } = this.props
-
-    const {
-      move,
-      offset,
-      swiping,
-      transition,
-      actionTrigger,
-      leftActionBoxWidth,
-      leftActionBoxVisibility,
-      rightActionBoxWidth,
-      rightActionBoxVisibility
-    } = this.state
+      props: {
+        onTouchStart,
+        onTouchEnd,
+        onTouchMove,
+        leftButtons,
+        rightButtons,
+        transitionFunc,
+        disableParallax,
+        className,
+        children
+      },
+      state: {
+        move,
+        offset,
+        swiping,
+        transition,
+        actionTrigger,
+        dynLeftActionBoxWidth,
+        dynRightActionBoxWidth,
+        leftActionBoxWidth,
+        leftActionBoxVisibility,
+        rightActionBoxWidth,
+        rightActionBoxVisibility
+      }
+    } = this
 
     const transitionStyle = swiping && !transition ? '' : transitionFunc
     return (
@@ -265,8 +268,9 @@ class SwipeRow extends Component {
             position: 'absolute',
             top: 0,
             left: disableParallax ? 0 : Math.min(0, -leftActionBoxWidth + (offset + move)),
-            width: leftActionBoxWidth ? Math.max(leftActionBoxWidth, (offset + move)) : 'auto',
+            width: disableParallax ? 'auto' : Math.max(leftActionBoxWidth, (offset + move)) || 'auto',
             display: 'flex',
+            flexWrap: 'wrap-reverse',
             flexDirection: 'row-reverse',
             transition: transitionStyle
           }}
@@ -274,7 +278,7 @@ class SwipeRow extends Component {
           {
             disableParallax
             ? leftButtons
-            : this.wrapParallaxActions(leftButtons, 'right', offset + move, leftActionBoxWidth, transitionStyle, actionTrigger)
+            : this.wrapParallaxActions(leftButtons, 'right', offset + move, leftActionBoxWidth, dynLeftActionBoxWidth, transitionStyle, actionTrigger)
           }
         </div>
         <div
@@ -285,15 +289,16 @@ class SwipeRow extends Component {
             position: 'absolute',
             top: 0,
             right: disableParallax ? 0 : Math.min(0, -rightActionBoxWidth - (offset + move)),
-            width: leftActionBoxWidth ? Math.max(rightActionBoxWidth, -(offset + move)) : 'auto',
+            width: disableParallax ? 'auto' : Math.max(rightActionBoxWidth, -(offset + move)) || 'auto',
             display: 'flex',
+            flexWrap: 'wrap-reverse',
             transition: transitionStyle
           }}
         >
           {
             disableParallax
             ? rightButtons
-            : this.wrapParallaxActions(rightButtons, 'left', offset + move, rightActionBoxWidth, transitionStyle, actionTrigger)
+            : this.wrapParallaxActions(rightButtons, 'left', offset + move, rightActionBoxWidth, dynRightActionBoxWidth, transitionStyle, actionTrigger)
           }
         </div>
       </div>
@@ -323,7 +328,7 @@ SwipeRow.defaultProps = {
   switchThreshold: 0.5,
   deltaThreshold: 10,
   flickThreshold: 200,
-  transitionFunc: 'all 2s cubic-bezier(0, 0, 0, 1)',
+  transitionFunc: 'all .7s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
   disableParallax: false
