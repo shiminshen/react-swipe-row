@@ -13,6 +13,7 @@ or use storybook
 
     npm run storybook
 
+then swipe the row by mobile dev tool!
 
 Usage
 ---
