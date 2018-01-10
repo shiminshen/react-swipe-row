@@ -29,17 +29,6 @@ class SwipeRow extends Component {
     })
   }
 
-  componentDidUpdate (prevProps, prevState) {
-    let leftActionBoxWidth = this.leftActionBox ? this.leftActionBox.getBoundingClientRect().width : 0
-    let rightActionBoxWidth = this.rightActionBox ? this.rightActionBox.getBoundingClientRect().width : 0
-    if (leftActionBoxWidth !== prevState.leftActionBoxWidth || rightActionBoxWidth !== prevState.rightActionBoxWidth) {
-      this.setState({
-        leftActionBoxWidth,
-        rightActionBoxWidth
-      })
-    }
-  }
-
   getPosition (e) {
     return {
       x: e.clientX || e.targetTouches[0].clientX,
@@ -182,6 +171,7 @@ class SwipeRow extends Component {
         key={idx}
         style={{
           position: 'relative',
+          flexGrow: 1,
           transition,
           left: align === 'left'
             ? Math.min(0, -(width / actionElements.length) * idx - contentPosition * (1 / actionElements.length * idx))
@@ -249,6 +239,7 @@ class SwipeRow extends Component {
             position: 'absolute',
             top: 0,
             left: disableParallax ? 0 : Math.min(0, -leftActionBoxWidth + contentPosition),
+            width: disableParallax ? 'auto' : Math.max(leftActionBoxWidth, contentPosition) || 'auto',
             display: 'flex',
             flexDirection: 'row-reverse',
             transition: transitionStyle
@@ -268,6 +259,7 @@ class SwipeRow extends Component {
             position: 'absolute',
             top: 0,
             right: disableParallax ? 0 : Math.min(0, -rightActionBoxWidth - contentPosition),
+            width: disableParallax ? 'auto' : Math.max(rightActionBoxWidth, -contentPosition) || 'auto',
             display: 'flex',
             transition: transitionStyle
           }}
