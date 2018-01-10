@@ -279,15 +279,45 @@ SwipeRow.propTypes = {
   onTouchStart: PropTypes.func,
   onTouchMove: PropTypes.func,
   onTouchEnd: PropTypes.func,
+  /**
+   * Class name to customize style of wrapper component
+   */
   className: PropTypes.string,
+  /**
+   * React components at the left side
+   */
   leftButtons: PropTypes.array,
+  /**
+   * React components at the right side
+   */
   rightButtons: PropTypes.array,
+  /**
+   * The propotion of left and right buttons' width  to trigger those buttons to switch
+   */
   switchThreshold: PropTypes.number,
+  /**
+   * The moving distance to determine this swipe is vertical or horizontal
+   */
   deltaThreshold: PropTypes.number,
+  /**
+   * The duration time to determine the swipe is flick or not
+   */
   flickThreshold: PropTypes.number,
+  /**
+   * The transition function of touch end animation
+   */
   transitionFunc: PropTypes.string,
+  /**
+   * Disable content to swipe left
+   */
   disableSwipeLeft: PropTypes.bool,
+  /**
+   * Disable content to swipe right
+   */
   disableSwipeRight: PropTypes.bool,
+  /**
+   * Disable parallax when buttons swiping
+   */
   disableParallax: PropTypes.bool
 }
 
