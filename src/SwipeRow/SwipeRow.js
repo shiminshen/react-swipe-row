@@ -1,8 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import autobind from 'react-autobind'
 
-class SwipeRow extends Component {
+export default class SwipeRow extends Component {
   constructor (props) {
     super(props)
 
@@ -19,7 +18,6 @@ class SwipeRow extends Component {
       rightActionBoxWidth: 0,
       rightActionBoxVisibility: false
     }
-    autobind(this)
   }
 
   componentDidMount () {
@@ -55,7 +53,7 @@ class SwipeRow extends Component {
         x,
         y,
         startTime: Date.now()
-      }, () => cb && cb(this.props.rowId))
+      }, () => cb && cb(e))
     }
   }
 
@@ -104,7 +102,7 @@ class SwipeRow extends Component {
           transition: false,
           leftActionBoxVisibility: contentPosition > 0,
           rightActionBoxVisibility: contentPosition < 0
-        }, () => cb && cb(this.props.rowId))
+        }, () => cb && cb(e))
       } else {
         // if this swiping is regarded as a vertical swiping, ignore horizental swiping change
         this.setState({
@@ -161,7 +159,7 @@ class SwipeRow extends Component {
         move: 0,
         offset: newOffset,
         transition: true
-      }, () => cb && cb(this.props.rowId))
+      }, () => cb && cb(e))
     }
   }
 
@@ -247,8 +245,8 @@ class SwipeRow extends Component {
         >
           {
             disableParallax
-            ? leftButtons
-            : this.wrapParallaxActions(leftButtons, 'right', contentPosition, leftActionBoxWidth, transitionStyle)
+              ? leftButtons
+              : this.wrapParallaxActions(leftButtons, 'right', contentPosition, leftActionBoxWidth, transitionStyle)
           }
         </div>
         <div
@@ -266,8 +264,8 @@ class SwipeRow extends Component {
         >
           {
             disableParallax
-            ? rightButtons
-            : this.wrapParallaxActions(rightButtons, 'left', contentPosition, rightActionBoxWidth, transitionStyle)
+              ? rightButtons
+              : this.wrapParallaxActions(rightButtons, 'left', contentPosition, rightActionBoxWidth, transitionStyle)
           }
         </div>
       </div>
@@ -283,6 +281,10 @@ SwipeRow.propTypes = {
    * Class name to customize style of wrapper component
    */
   className: PropTypes.string,
+  /**
+   * React components which will be the content of the SwipeRow
+   */
+  children: PropTypes.node,
   /**
    * React components at the left side
    */
@@ -332,5 +334,3 @@ SwipeRow.defaultProps = {
   disableSwipeRight: false,
   disableParallax: false
 }
-
-export default SwipeRow
