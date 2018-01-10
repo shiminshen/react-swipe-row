@@ -59,6 +59,61 @@ class SwipeRow extends Component {
     }
   }
 
+  handleTouchMove (cb) {
+    return e => {
+      const { deltaThreshold, disableSwipeLeft, disableSwipeRight } = this.props
+      const { deltaX, absX, absY } = this.calculateMovingDistance(e)
+
+      let swiping = this.state.swiping
+      if (absX < deltaThreshold && absY < deltaThreshold && !swiping) { return }
+
+      // defined swiping when first crossed delta threshold
+      if (!swiping) {
+        swiping = absX > absY ? 1 : -1
+      }
+
+      if (swiping > 0) {
+        // if this swiping is defined as a horzental swiping, prevent default behavior
+        // and update the state of SwipeRow
+        if (e.cancelable) {
+          if (!e.defaultPrevented) {
+            e.preventDefault()
+          }
+        }
+
+        let move = deltaX
+        let offset = this.state.offset
+        const contentPosition = move + offset
+        if (disableSwipeRight) {
+          if (contentPosition >= 0) {
+            move = 0
+            offset = 0
+          }
+        }
+        if (disableSwipeLeft) {
+          if (contentPosition <= 0) {
+            move = 0
+            offset = 0
+          }
+        }
+
+        this.setState({
+          swiping,
+          move,
+          offset,
+          transition: false,
+          leftActionBoxVisibility: contentPosition > 0,
+          rightActionBoxVisibility: contentPosition < 0
+        }, () => cb && cb(this.props.rowId))
+      } else {
+        // if this swiping is regarded as a vertical swiping, ignore horizental swiping change
+        this.setState({
+          swiping
+        })
+      }
+    }
+  }
+
   handleTouchEnd (cb) {
     return e => {
       const { move, startTime, offset, leftActionBoxWidth, rightActionBoxWidth } = this.state
@@ -110,63 +165,8 @@ class SwipeRow extends Component {
     }
   }
 
-  handleTouchMove (cb) {
-    return e => {
-      const { deltaThreshold, disableSwipeLeft, disableSwipeRight } = this.props
-      const { deltaX, absX, absY } = this.calculateMovingDistance(e)
-
-      let swiping = this.state.swiping
-      if (absX < deltaThreshold && absY < deltaThreshold && !swiping) { return }
-
-      // defined swiping when first crossed delta threshold
-      if (!swiping) {
-        swiping = absX > absY ? 1 : -1
-      }
-
-      if (swiping > 0) {
-        // if this swiping is defined as a horzental swiping, prevent default behavior
-        // and update the state of SwipeRow
-        if (e.cancelable) {
-          if (!e.defaultPrevented) {
-            e.preventDefault()
-          }
-        }
-
-        let move = deltaX
-        let offset = this.state.offset
-        const contentPosition = move + offset
-        if (disableSwipeRight) {
-          if (contentPosition >= 0) {
-            move = 0
-            offset = 0
-          }
-        }
-        if (disableSwipeLeft) {
-          if (contentPosition <= 0) {
-            move = 0
-            offset = 0
-          }
-        }
-
-        this.setState({
-          swiping,
-          move,
-          offset,
-          transition: false,
-          leftActionBoxVisibility: contentPosition > 0,
-          rightActionBoxVisibility: contentPosition < 0
-        }, () => cb && cb(this.props.rowId))
-      } else {
-        // if this swiping is defined as a vertical swiping, ignore horizental swiping change
-        this.setState({
-          swiping
-        })
-      }
-    }
-  }
-
-  wrapParallaxActions (actionElements, align, contentPosition, width, transition) {
-    return actionElements && actionElements.map((el, idx) => (
+  wrapParallaxActions (buttons, align, contentPosition, width, transition) {
+    return buttons && buttons.map((el, idx) => (
       <div
         key={idx}
         style={{
@@ -174,8 +174,8 @@ class SwipeRow extends Component {
           flexGrow: 1,
           transition,
           left: align === 'left'
-            ? Math.min(0, -(width / actionElements.length) * idx - contentPosition * (1 / actionElements.length * idx))
-            : Math.max(0, (width / actionElements.length) * idx - contentPosition * (1 / actionElements.length * idx))
+            ? Math.min(0, -(width / buttons.length) * idx - contentPosition * (1 / buttons.length * idx))
+            : Math.max(0, (width / buttons.length) * idx - contentPosition * (1 / buttons.length * idx))
         }}
       >
         {el}
