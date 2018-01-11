@@ -82,17 +82,11 @@ export default class SwipeRow extends Component {
         let move = deltaX
         let offset = this.state.offset
         const contentPosition = move + offset
-        if (disableSwipeRight) {
-          if (contentPosition >= 0) {
-            move = 0
-            offset = 0
-          }
-        }
-        if (disableSwipeLeft) {
-          if (contentPosition <= 0) {
-            move = 0
-            offset = 0
-          }
+
+        // handle the disable swipe
+        if ((disableSwipeRight && contentPosition >= 0) || (disableSwipeLeft && contentPosition <= 0)) {
+          move = 0
+          offset = 0
         }
 
         this.setState({
@@ -128,13 +122,11 @@ export default class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset < 0 ? 0 : leftActionBoxWidth
         } else {
+          // check whether the right action box needs to be closed
           if ((contentPosition > -rightActionBoxWidth * switchThreshold)) {
-            // check whether the right action box needs to be closed
-            newOffset = 0
-          }
-          if ((contentPosition > leftActionBoxWidth * switchThreshold) && !disableSwipeRight) {
             // check whether the left action box need to be open
-            newOffset = leftActionBoxWidth
+            newOffset = (contentPosition > leftActionBoxWidth * switchThreshold) && !disableSwipeRight
+              ? leftActionBoxWidth : 0
           }
         }
       } else if (move < 0) {
@@ -143,13 +135,11 @@ export default class SwipeRow extends Component {
           // if it is a flick swipe
           newOffset = offset > 0 ? 0 : -rightActionBoxWidth
         } else {
+          // check whether the right action box need to be open
           if (contentPosition < leftActionBoxWidth * switchThreshold) {
             // check whether the left action box needs to be closed
-            newOffset = 0
-          }
-          if ((contentPosition < -rightActionBoxWidth * switchThreshold) && !disableSwipeLeft) {
-            // check whether the right action box need to be open
-            newOffset = -rightActionBoxWidth
+            newOffset = (contentPosition < -rightActionBoxWidth * switchThreshold) && !disableSwipeLeft
+              ? -rightActionBoxWidth : 0
           }
         }
       }
