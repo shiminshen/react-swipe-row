@@ -59,7 +59,21 @@ class App extends Component {
               <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
             </SwipeRow>
           ))
-
+        }
+        <hr />
+        <h3>Disable Expand</h3>
+        {
+          this.state.list.map(rowId => (
+            <SwipeRow
+              key={rowId}
+              rowId={rowId}
+              disableExpand
+              leftButtons={leftButtons}
+              rightButtons={rightButtons}
+            >
+              <div style={{background: '#fff', padding: '12px', textAlign: 'center'}}>example {rowId.toString()}</div>
+            </SwipeRow>
+          ))
         }
         <hr />
         <h3>Disable Right Swipe</h3>

@@ -1,4 +1,4 @@
-import React, {Component} from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
 export default class SwipeRow extends Component {
@@ -39,7 +39,7 @@ export default class SwipeRow extends Component {
   }
 
   calculateMovingDistance (e) {
-    const {x, y} = this.getPosition(e)
+    const { x, y } = this.getPosition(e)
     const deltaX = x - this.state.x
     const deltaY = y - this.state.y
     return {
@@ -52,7 +52,7 @@ export default class SwipeRow extends Component {
 
   handleTouchStart (cb) {
     return e => {
-      const {x, y} = this.getPosition(e)
+      const { x, y } = this.getPosition(e)
       this.setState(
         {
           x,
@@ -66,8 +66,12 @@ export default class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const {deltaThreshold, disableSwipeLeft, disableSwipeRight} = this.props
-      const {deltaX, absX, absY} = this.calculateMovingDistance(e)
+      const {
+        deltaThreshold,
+        disableSwipeLeft,
+        disableSwipeRight
+      } = this.props
+      const { deltaX, absX, absY } = this.calculateMovingDistance(e)
 
       let swiping = this.state.swiping
       if (absX < deltaThreshold && absY < deltaThreshold && !swiping) {
@@ -227,6 +231,7 @@ export default class SwipeRow extends Component {
         rightButtons,
         transitionFunc,
         disableParallax,
+        disableExpand,
         className,
         children
       },
@@ -248,7 +253,7 @@ export default class SwipeRow extends Component {
     return (
       <div
         className={className}
-        style={{position: 'relative', overflow: 'hidden'}}>
+        style={{ position: 'relative', overflow: 'hidden' }}>
         <div
           className='sr-content'
           style={{
@@ -281,7 +286,7 @@ export default class SwipeRow extends Component {
             left: disableParallax
               ? 0
               : Math.min(0, -leftActionBoxWidth + contentPosition),
-            width: disableParallax
+            width: disableParallax || disableExpand
               ? 'auto'
               : Math.max(leftActionBoxWidth, contentPosition) || 'auto',
             display: 'flex',
@@ -310,7 +315,7 @@ export default class SwipeRow extends Component {
             right: disableParallax
               ? 0
               : Math.min(0, -rightActionBoxWidth - contentPosition),
-            width: disableParallax
+            width: disableParallax || disableExpand
               ? 'auto'
               : Math.max(rightActionBoxWidth, -contentPosition) || 'auto',
             display: 'flex',
@@ -378,7 +383,11 @@ SwipeRow.propTypes = {
   /**
    * Disable parallax when buttons swiping
    */
-  disableParallax: PropTypes.bool
+  disableParallax: PropTypes.bool,
+  /**
+   * Disable expend effect when buttons swiping
+   */
+  disableExpand: PropTypes.bool
 }
 
 SwipeRow.defaultProps = {
@@ -390,5 +399,6 @@ SwipeRow.defaultProps = {
   transitionFunc: 'all .3s cubic-bezier(0, 0, 0, 1)',
   disableSwipeLeft: false,
   disableSwipeRight: false,
-  disableParallax: false
+  disableParallax: false,
+  disableExpand: false
 }
