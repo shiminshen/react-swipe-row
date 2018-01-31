@@ -31,6 +31,19 @@ export default class SwipeRow extends Component {
     })
   }
 
+  componentWillReceiveProps (nextProps) {
+    if (nextProps.isClose) {
+      this.setState(
+        {
+          swiping: 0,
+          move: 0,
+          offset: 0,
+          transition: true
+        }
+      )
+    }
+  }
+
   getPosition (e) {
     return {
       x: e.clientX || e.targetTouches[0].clientX,
@@ -357,6 +370,10 @@ SwipeRow.propTypes = {
    */
   rightButtons: PropTypes.array,
   /**
+   * Forced SwipeRow to close if isClose is true
+   */
+  isClose: PropTypes.bool,
+  /**
    * The propotion of left and right buttons' width  to trigger those buttons to switch
    */
   switchThreshold: PropTypes.number,
@@ -393,6 +410,7 @@ SwipeRow.propTypes = {
 SwipeRow.defaultProps = {
   leftButtons: [],
   rightButtons: [],
+  isClose: true,
   switchThreshold: 0.5,
   deltaThreshold: 10,
   flickThreshold: 200,
