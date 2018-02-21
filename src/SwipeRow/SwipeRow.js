@@ -22,32 +22,26 @@ export default class SwipeRow extends Component {
 
   componentDidMount () {
     this.setState({
-      leftActionBoxWidth: this.leftActionBox
-        ? this.leftActionBox.getBoundingClientRect().width
-        : 0,
-      rightActionBoxWidth: this.rightActionBox
-        ? this.rightActionBox.getBoundingClientRect().width
-        : 0
+      leftActionBoxWidth: this.leftActionBox.getBoundingClientRect().width,
+      rightActionBoxWidth: this.rightActionBox.getBoundingClientRect().width
     })
   }
 
   componentWillReceiveProps (nextProps) {
     if (nextProps.isClose) {
-      this.setState(
-        {
-          swiping: 0,
-          move: 0,
-          offset: 0,
-          transition: true
-        }
-      )
+      this.setState({
+        swiping: 0,
+        move: 0,
+        offset: 0,
+        transition: true
+      })
     }
   }
 
   getPosition (e) {
     return {
-      x: e.clientX || e.targetTouches[0].clientX,
-      y: e.clientY || e.targetTouches[0].clientY
+      x: e.targetTouches[0].clientX,
+      y: e.targetTouches[0].clientY
     }
   }
 
@@ -79,11 +73,7 @@ export default class SwipeRow extends Component {
 
   handleTouchMove (cb) {
     return e => {
-      const {
-        deltaThreshold,
-        disableSwipeLeft,
-        disableSwipeRight
-      } = this.props
+      const { deltaThreshold, disableSwipeLeft, disableSwipeRight } = this.props
       const { deltaX, absX, absY } = this.calculateMovingDistance(e)
 
       let swiping = this.state.swiping
@@ -99,11 +89,7 @@ export default class SwipeRow extends Component {
       if (swiping > 0) {
         // if this swiping is defined as a horzental swiping, prevent default behavior
         // and update the state of SwipeRow
-        if (e.cancelable) {
-          if (!e.defaultPrevented) {
-            e.preventDefault()
-          }
-        }
+        e.preventDefault()
 
         let move = deltaX
         let offset = this.state.offset
@@ -227,7 +213,8 @@ export default class SwipeRow extends Component {
                     width / buttons.length * idx -
                       contentPosition * (1 / buttons.length * idx)
                   )
-          }}>
+          }}
+        >
           {el}
         </div>
       ))
@@ -266,7 +253,8 @@ export default class SwipeRow extends Component {
     return (
       <div
         className={className}
-        style={{ position: 'relative', overflow: 'hidden' }}>
+        style={{ position: 'relative', overflow: 'hidden' }}
+      >
         <div
           className='sr-content'
           style={{
@@ -284,7 +272,8 @@ export default class SwipeRow extends Component {
               leftActionBoxVisibility: offset > 0,
               rightActionBoxVisibility: offset < 0
             })
-          }>
+          }
+        >
           {children}
         </div>
         <div
@@ -299,13 +288,15 @@ export default class SwipeRow extends Component {
             left: disableParallax
               ? 0
               : Math.min(0, -leftActionBoxWidth + contentPosition),
-            width: disableParallax || disableExpand
-              ? 'auto'
-              : Math.max(leftActionBoxWidth, contentPosition) || 'auto',
+            width:
+              disableParallax || disableExpand
+                ? 'auto'
+                : Math.max(leftActionBoxWidth, contentPosition) || 'auto',
             display: 'flex',
             flexDirection: 'row-reverse',
             transition: transitionStyle
-          }}>
+          }}
+        >
           {disableParallax
             ? leftButtons
             : this.wrapParallaxActions(
@@ -328,12 +319,14 @@ export default class SwipeRow extends Component {
             right: disableParallax
               ? 0
               : Math.min(0, -rightActionBoxWidth - contentPosition),
-            width: disableParallax || disableExpand
-              ? 'auto'
-              : Math.max(rightActionBoxWidth, -contentPosition) || 'auto',
+            width:
+              disableParallax || disableExpand
+                ? 'auto'
+                : Math.max(rightActionBoxWidth, -contentPosition) || 'auto',
             display: 'flex',
             transition: transitionStyle
-          }}>
+          }}
+        >
           {disableParallax
             ? rightButtons
             : this.wrapParallaxActions(
