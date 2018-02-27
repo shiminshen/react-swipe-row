@@ -46,7 +46,7 @@
       "/test/**/*"
     ]
   },
-  "version": "0.0.5",
+  "version": "0.0.6",
   "author": "smshen",
   "homepage": "https://shiminshen.github.io/react-swipe-row",
   "dependencies": {
@@ -120,8 +120,8 @@
   "babel": {
     "presets": [
       "react-app",
-      "es2015", 
-      "react", 
+      "es2015",
+      "react",
       "stage-0"
     ]
   },
