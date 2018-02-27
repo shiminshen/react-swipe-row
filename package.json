@@ -1,5 +1,6 @@
 {
   "name": "react-swipe-row",
+  "main": "./src/SwipeRow",
   "jest": {
     "collectCoverageFrom": [
       "src/SwipeRow/**/*"
@@ -17,7 +18,7 @@
     ]
   },
   "version": "0.0.4",
-  "private": true,
+  "author": "smshen",
   "homepage": "https://shiminshen.github.io/react-swipe-row",
   "dependencies": {
     "bootstrap": "^4.0.0-beta.2",

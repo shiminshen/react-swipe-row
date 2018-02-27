@@ -19,7 +19,7 @@ Usage
 ---
 
 ```javascript
-import { SwipeRow, SwipeAction } from 'SwipeRow'
+import SwipeRow from 'SwipeRow'
 
 const rowId = 1
 
