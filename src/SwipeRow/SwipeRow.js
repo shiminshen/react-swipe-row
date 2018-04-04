@@ -283,6 +283,7 @@ export default class SwipeRow extends Component {
               disableParallax || disableExpand
                 ? 'auto'
                 : Math.max(leftActionBoxWidth, contentPosition) || 'auto',
+            height: '100%',
             display: 'flex',
             flexDirection: 'row-reverse',
             transition: transitionStyle
@@ -314,6 +315,7 @@ export default class SwipeRow extends Component {
               disableParallax || disableExpand
                 ? 'auto'
                 : Math.max(rightActionBoxWidth, -contentPosition) || 'auto',
+            height: '100%',
             display: 'flex',
             transition: transitionStyle
           }}
