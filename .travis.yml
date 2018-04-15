@@ -7,6 +7,7 @@ cache:
     - "node_modules"
 before_deploy:
   - npm run lint
+  - npm run lib
   - npm run build
 deploy:
   - provider: releases
@@ -26,5 +27,6 @@ deploy:
   - provider: npm
     email: thanatos1710@gmail.com
     api_key: $NPM_TOKEN
+    skip_cleanup: true
     on:
       tags: true
