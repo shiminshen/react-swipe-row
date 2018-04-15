@@ -49,6 +49,7 @@
   "version": "0.0.12",
   "author": "smshen",
   "homepage": "https://shiminshen.github.io/react-swipe-row",
+  "license": "MIT",
   "dependencies": {
     "autoprefixer": "7.1.6",
     "babel-cli": "^6.26.0",
