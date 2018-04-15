@@ -25,6 +25,7 @@ const rowId = 1
 
 <SwipeRow
   rowId={rowId}
+  onTouchStart={(e, { x, y, move, offset, ...rest }) => {}}
   rightButtons={[
     <div style={{padding: '12px', background: 'blue'}}>Delete</div>,
     <div style={{padding: '12px', background: 'red'}}>Delete</div>,
@@ -60,3 +61,5 @@ API
 |  disableSwipeLeft      | Disable swipe left     | Boolean  | false |
 |  disableSwipeRight     | Disable swipe right    | Boolean  | false |
 
+#### Event Props
+```onTouchStart```, ```onTouchMove``` and ```onTouchEnd``` are the callback event with corresponding event as the first parameter and the state of each threshold as the second parameter.

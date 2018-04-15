@@ -75,7 +75,7 @@ export default class SwipeRow extends Component {
       y,
       startTime: Date.now()
     })
-    this.props.onTouchStart && this.props.onTouchStart(e)
+    this.props.onTouchStart && this.props.onTouchStart(e, this.state)
   }
 
   handleTouchMove (e) {
@@ -124,7 +124,7 @@ export default class SwipeRow extends Component {
         swiping
       })
     }
-    this.props.onTouchMove && this.props.onTouchMove(e)
+    this.props.onTouchMove && this.props.onTouchMove(e, this.state)
   }
 
   handleTouchEnd (e) {
@@ -182,7 +182,7 @@ export default class SwipeRow extends Component {
     }
 
     this.doUpdateContentOffset(newOffset)
-    this.props.onTouchEnd && this.props.onTouchEnd(e)
+    this.props.onTouchEnd && this.props.onTouchEnd(e, this.state)
   }
 
   wrapParallaxActions (buttons, align, contentPosition, width, transition) {
